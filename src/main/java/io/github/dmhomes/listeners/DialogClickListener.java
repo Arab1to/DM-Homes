@@ -35,11 +35,14 @@ public class DialogClickListener implements Listener {
             return;
         }
         
-        // Get player from the connection
-        final Player player = event.getPlayer();
-        if (player == null) {
+        // Get player from the connection - PlayerCustomClickEvent doesn't have getPlayer()
+        // We need to get it from the connection's audience
+        final var connection = event.getCommonConnection();
+        if (!(connection instanceof org.bukkit.entity.Player)) {
             return;
         }
+        
+        final Player player = (Player) connection;
         
         // Handle different dialog actions
         if (keyString.startsWith("dmhomes:create_home/")) {
