@@ -45,18 +45,16 @@ messages:
   home-list-header: "<yellow>Your homes ({count}/{max}):</yellow>"
   home-list-entry: "<gray>- <white>{home_name}</white> <dark_gray>({world}, {x}, {y}, {z})</dark_gray></gray>"
   home-list-empty: "<gray>You don't have any homes set.</gray>"
-  # Teleportation messages
-  warmup-title: "<yellow>Teleporting...</yellow>"
-  warmup-subtitle: "<gray>Don't move! {time}s</gray>"
-  blackscreen-title: ":blackscreen:"
-  teleport-success: "<green>Teleported to {home_name}!</green>"
-  teleport-cancelled: "<red>Teleportation cancelled!</red>"
-  teleport-cancelled-move: "<red>Teleportation cancelled - you moved!</red>"
-  teleport-cancelled-damage: "<red>Teleportation cancelled - you took damage!</red>"
-  # Teleportation title messages
-  teleport-cancelled-title: "<red>Teleportation Cancelled</red>"
-  teleport-cancelled-subtitle-move: "<gray>You moved during teleportation!</gray>"
-  teleport-cancelled-subtitle-damage: "<gray>You took damage during teleportation!</gray>"
+  # Teleportation messages - these match the keys used in code
+  teleportation-messages-warmup-title: "<yellow>Teleporting...</yellow>"
+  teleportation-messages-warmup-subtitle: "<gray>Don't move! {time}s</gray>"
+  teleportation-messages-blackscreen-title: ":blackscreen:"
+  teleportation-messages-teleport-success: "<green>Teleported to {home_name}!</green>"
+  teleportation-teleport-cancelled-move: "<red>Teleportation cancelled - you moved!</red>"
+  teleportation-teleport-cancelled-damage: "<red>Teleportation cancelled - you took damage!</red>"
+  teleportation-messages-teleport-cancelled-title: "<red>Teleportation Cancelled</red>"
+  teleportation-messages-teleport-cancelled-subtitle-move: "<gray>You moved during teleportation!</gray>"
+  teleportation-messages-teleport-cancelled-subtitle-damage: "<gray>You took damage during teleportation!</gray>"
 
 # Home permission system
 homes:

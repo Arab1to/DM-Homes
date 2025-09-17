@@ -188,19 +188,36 @@ public final class TeleportationManager {
 
         try {
             if (soundName.contains(":")) {
-                // Custom sound (ItemsAdder or other) - use playsound command silently
+                // Custom sound (ItemsAdder or other) - play directly to player
                 this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
-                    this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), 
-                        "playsound " + soundName + " master " + player.getName() + " ~ ~ ~ 1.0 1.0");
+                    try {
+                        // Use Bukkit's built-in method for custom sounds
+                        player.playSound(player.getLocation(), soundName, 1.0f, 1.0f);
+                    } catch (final Exception e) {
+                        // Fallback to command if direct method fails
+                        this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), 
+                            "execute at " + player.getName() + " run playsound " + soundName + " master " + player.getName() + " ~ ~ ~ 1.0 1.0 0.0");
+                    }
                 });
             } else {
                 // Vanilla sound
-                final Sound sound = Sound.valueOf(soundName.toUpperCase().replace("MINECRAFT:", "").replace(".", "_"));
-                player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
+                try {
+                    String cleanSoundName = soundName.toUpperCase();
+                    if (cleanSoundName.startsWith("MINECRAFT:")) {
+                        cleanSoundName = cleanSoundName.substring(10);
+                    }
+                    cleanSoundName = cleanSoundName.replace(".", "_");
+                    
+                    final Sound sound = Sound.valueOf(cleanSoundName);
+                    player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
+                } catch (final IllegalArgumentException e) {
+                    // If vanilla sound parsing fails, try as custom sound
+                    player.playSound(player.getLocation(), soundName, 1.0f, 1.0f);
+                }
             }
         } catch (final Exception exception) {
             this.plugin.getLogger().warning("Failed to play sound: " + soundName);
-            exception.printStackTrace();
+            this.plugin.getLogger().warning("Error: " + exception.getMessage());
         }
     }
 

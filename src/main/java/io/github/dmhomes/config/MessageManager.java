@@ -32,7 +32,15 @@ public final class MessageManager {
     public @NotNull Component getMessage(final @NotNull String messageKey, final @NotNull String... placeholders) {
         Objects.requireNonNull(messageKey, "Message key cannot be null");
         
-        String message = this.configManager.getMessage(messageKey);
+        // Convert dots to hyphens for config key lookup
+        String configKey = messageKey.replace(".", "-");
+        String message = this.configManager.getMessage(configKey);
+        
+        // If not found with hyphens, try original key
+        if (message == null) {
+            message = this.configManager.getMessage(messageKey);
+        }
+        
         if (message == null) {
             this.configManager.getPlugin().getLogger().warning("Missing message key: " + messageKey);
             message = "<red>Missing message: " + messageKey + "</red>";

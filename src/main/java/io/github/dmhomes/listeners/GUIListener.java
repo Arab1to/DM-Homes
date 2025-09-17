@@ -243,8 +243,7 @@ public final class GUIListener implements Listener {
     private void handleTeleportToHome(final @NotNull MainHomesGUI gui, final @NotNull Player player, final @NotNull Home home) {
         gui.close();
         
-        player.sendMessage(this.plugin.getMessageManager()
-            .getMessage("teleportation.messages.teleport-success", "home_name", home.getName()));
+        // Don't send message here - TeleportationManager will handle it
         
         // Use our teleportation manager
         this.plugin.getTeleportationManager().teleportToHome(player, home);
