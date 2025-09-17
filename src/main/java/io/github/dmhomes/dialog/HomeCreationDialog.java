@@ -41,12 +41,13 @@ public final class HomeCreationDialog {
         
         try {
             final HomeDialogBuilder dialogBuilder = new HomeDialogBuilder(this.plugin);
+            
+            // Store callback for click handler BEFORE creating dialog
+            this.setPendingCallback(homeName -> this.handleHomeCreation(player, homeName));
+            
             final Dialog dialog = dialogBuilder.createHomeCreationDialog(player, homeName -> {
                 this.handleHomeCreation(player, homeName);
             });
-            
-            // Store callback for click handler
-            this.setPendingCallback(homeName -> this.handleHomeCreation(player, homeName));
             
             player.showDialog(dialog);
             
