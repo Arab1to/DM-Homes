@@ -1,0 +1,6 @@
+name: DialogRules
+version: '${project.version}'
+description: 'A plugin for creating rules using the 1.21.6+ Dialog feature.'
+
+main: ch.andre601.dialogrules.DialogRules
+api-version: '1.21'

@@ -1,0 +1,96 @@
+#
+# Should the dialog be shown to player on join?
+# When enabled will the player receive the Dialog during the clients Config phase
+# (before they actually join the server).
+# The Dialog will also have an Accept and Decline button (Configurable below).
+#
+# Players who accepted the Rules won't see the Dialog on a repeated join.
+#
+# Defaults to false if not set.
+#
+showOnJoin: true
+
+#
+# The Title of the Dialog.
+# MiniMessage formatting can be used.
+#
+title: '<gradient:yellow:gold><bold>Server Rules!'
+#
+# The Description of the Dialog shown right below the title.
+# MiniMessage formatting can be used.
+#
+description: 'Please read and accept our rules to be able to play on our server.'
+
+#
+# Settings for the accept and decline buttons.
+#
+buttons:
+  #
+  # Settings for the Accept button.
+  # This button is only used when showOnJoin is enabled.
+  #
+  accept:
+    #
+    # The text to display on the button.
+    # Accepts the MiniMessage formatting including translatables.
+    #
+    text: '<green>Accept'
+    #
+    # The action to perform when the player presses this button.
+    #
+    # Available actions:
+    #   - COMMAND:<command>   - Performs <command> as the server.
+    #                           Note: Do not prefix the command with a '/'.
+    #   - DISCONNECT:<reason> - Disconnects the player with the reason <reason> (Supports MiniMessage).
+    #   - NONE                - Don't perform any action (Default).
+    #
+    # {uuid} can be used to display the UUID of the player.
+    # Other data (i.e. Player name) are not possible due to limitations.
+    #
+    action: 'COMMAND:spawn'
+  #
+  # Settings for the Decline button.
+  # This button is only used when showOnJoin is enabled.
+  #
+  decline:
+    #
+    # The text to display on the button.
+    # Accepts the MiniMessage formatting including translatables.
+    #
+    text: '<red>Decline'
+    #
+    # The action to perform when the player presses this button.
+    #
+    # Available actions:
+    #   - COMMAND:<command>   - Performs <command> as the server.
+    #                           Note: Do not prefix the command with a '/'.
+    #   - DISCONNECT:<reason> - Disconnects the player with the reason <reason> (Supports MiniMessage).
+    #   - NONE                - Don't perform any action (Default).
+    #
+    # {uuid} can be used to display the UUID of the player.
+    # Other data (i.e. Player name) are not possible due to limitations.
+    #
+    action: 'DISCONNECT:<red>Please accept our Server rules to join the server!'
+
+#
+# The format to apply for each rule's 'text' entry.
+#
+# Placeholders:
+#   - {num} gets replaced by the current list index.
+#   - {text} gets replaced by the actual rule text.
+#
+# Defaults to '{num}) {text}' if not set.
+#
+ruleFormat: '{num}) {text}'
+#
+# List of rules to display.
+# Each entry supports the following options:
+#
+#   - text: The text to display. Supports MiniMessage formatting.
+#   - item: The item to display.
+#           You can use the same format that is accepted by commands such as /minecraft:give
+#           Example: paper[custom_model_data={floats:[1000.0]}]
+#
+rules:
+  - text: 'No griefing!'
+    item: 'barrier'

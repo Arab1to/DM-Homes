@@ -1,0 +1,84 @@
+name: DM-Homes
+version: '${project.version}'
+main: io.github.dmhomes.DMHomesPlugin
+api-version: '1.21'
+author: DM-Homes Development Team
+description: Advanced GUI wrapper for AdvancedTeleport plugin
+website: https://github.com/dm-homes/dm-homes
+
+softdepend:
+  - ItemsAdder
+
+commands:
+  home:
+    description: Opens the homes GUI
+    aliases: [homes]
+  sethome:
+    description: Opens the homes GUI to set a home
+    aliases: [seht]
+  delhome:
+    description: Opens the homes GUI to delete a home
+    aliases: [delhom, removehome]
+  dom:
+    description: Opens the homes GUI
+    aliases: [domy, ustawdom]
+  dmhomes:
+    description: Main DM-Homes command
+    aliases: [dmh]
+
+permissions:
+  dmhomes.*:
+    description: Grants access to all DM-Homes features
+    default: false
+    children:
+      dmhomes.use: true
+      dmhomes.gui: true
+      dmhomes.admin: true
+      dmhomes.homes.unlimited: true
+  dmhomes.use:
+    description: Basic permission to use DM-Homes
+    default: true
+  dmhomes.gui:
+    description: Permission to access GUI features
+    default: true
+  dmhomes.admin:
+    description: Administrative permissions
+    default: op
+    children:
+      dmhomes.admin.reload: true
+  dmhomes.admin.reload:
+    description: Permission to reload the plugin
+    default: op
+  dmhomes.homes.unlimited:
+    description: Unlimited homes
+    default: false
+  dmhomes.homes.1:
+    description: Allows 1 home
+    default: false
+  dmhomes.homes.2:
+    description: Allows 2 homes
+    default: false
+  dmhomes.homes.3:
+    description: Allows 3 homes
+    default: true
+  dmhomes.homes.4:
+    description: Allows 4 homes
+    default: false
+  dmhomes.homes.5:
+    description: Allows 5 homes
+    default: false
+  dmhomes.homes.6:
+    description: Allows 6 homes
+    default: false
+  dmhomes.homes.7:
+    description: Allows 7 homes
+    default: false
+  dmhomes.homes.10:
+    description: Allows 10 homes
+    default: false
+  dmhomes.homes.15:
+    description: Allows 15 homes
+    default: false
+  dmhomes.homes.20:
+    description: Allows 20 homes
+    default: false

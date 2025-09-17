@@ -1,0 +1,209 @@
+# DM-Homes Configuration
+
+# Teleportation settings
+teleportation:
+  warmup-time: 5 # Warmup time in seconds
+  cancel-on-move: true # Cancel teleportation if player moves
+  cancel-on-damage: true # Cancel teleportation if player takes damage
+  blackscreen-effect: true # Enable black screen effect
+  blackscreen-duration: 50 # Duration of black screen fade in ticks
+  sounds:
+    teleport-start: "minecraft:block.portal.ambient"
+    teleport-end: "utilsandtools:teleportation_end"
+    teleport-cancel: "minecraft:block.note_block.bass"
+  messages:
+    warmup-title: "<yellow>Teleporting...</yellow>"
+    warmup-subtitle: "<gray>Don't move! {time}s</gray>"
+    blackscreen-title: ":blackscreen:"
+    teleport-success: "<green>Teleported to {home_name}!</green>"
+    teleport-cancelled: "<red>Teleportation cancelled!</red>"
+    teleport-cancelled-move: "<red>Teleportation cancelled - you moved!</red>"
+    teleport-cancelled-damage: "<red>Teleportation cancelled - you took damage!</red>"
+
+# All messages used in the plugin. Supports MiniMessage format.
+messages:
+  gui-create-home-title: "Enter Home Name"
+  home-created: "<green>Successfully created home named '{home_name}'!</green>"
+  home-teleported: "<gray>Teleporting to '{home_name}'...</gray>"
+  home-renamed: "<green>Successfully renamed home to '{home_name}'!</green>"
+  home-deleted: "<red>Successfully deleted home '{home_name}'.</red>"
+  home-icon-changed: "<aqua>Successfully changed icon for home '{home_name}'!</aqua>"
+  error-home-exists: "<red>A home with that name already exists!</red>"
+  error-invalid-name: "<red>Invalid home name! Please use only letters, numbers, and underscores.</red>"
+  error-max-homes: "<red>You have reached the maximum number of homes!</red>"
+  error-no-permission: "<red>You don't have permission to do that!</red>"
+  error-generic: "<red>An error occurred: {error}</red>"
+  error-home-not-found: "<red>Home '{home_name}' not found!</red>"
+  error-delete-failed: "<red>Failed to delete home '{home_name}'!</red>"
+  error-player-only: "<red>This command can only be used by players!</red>"
+  error-upgrade-required: "<red>You need to upgrade your rank to use this home slot!</red>"
+  plugin-reloaded: "<green>DM-Homes configuration reloaded successfully!</green>"
+  home-set-success: "<green>Home '{home_name}' set at your current location!</green>"
+  home-list-header: "<yellow>Your homes ({count}/{max}):</yellow>"
+  home-list-entry: "<gray>- <white>{home_name}</white> <dark_gray>({world}, {x}, {y}, {z})</dark_gray></gray>"
+  home-list-empty: "<gray>You don't have any homes set.</gray>"
+
+# Home permission system
+homes:
+  max-homes-default: 7 # Default max homes if no permission-based limit
+  max-homes-gui-slots: 7 # Maximum slots shown in GUI (for non-admin players)
+  name-regex: "^[a-zA-Z0-9_]{1,16}$" # Allowed home name pattern
+  world-blacklist: [] # Worlds where homes cannot be set
+
+guis:
+  main-menu:
+    title: "Your Homes"
+    size: 18
+    items:
+      # Items are dynamically placed in the first available slots.
+      available-slot:
+        material: "minecraft:GREEN_BED"
+        name: "<green><bold>Available Slot</bold></green>"
+        lore:
+          - "<gray>Left-click to set a new home."
+      occupied-slot:
+        # The default icon if no custom one is set.
+        material: "minecraft:BLUE_BED"
+        # Placeholders: {home_name}, {home_world}, {home_x}, {home_y}, {home_z}
+        name: "<gold>Home: {home_name}</gold>"
+        lore:
+          - "<gray>Location: {home_world}, {home_x}, {home_y}, {home_z}"
+          - ""
+          - "<yellow>Left-click to teleport."
+          - "<yellow>Right-click to manage."
+      unavailable-slot:
+        material: "minecraft:RED_BED"
+        name: "<red><bold>Upgrade Required</bold></red>"
+        lore:
+          - "<gray>You need to upgrade your rank"
+          - "<gray>to unlock this home slot."
+          - ""
+          - "<yellow>Visit our store to upgrade!"
+      close-button:
+        slot: 13 # Slot 13 in 18-slot GUI
+        material: "minecraft:barrier"
+        name: "<red><bold>Close</bold></red>"
+        lore: []
+
+  management-menu:
+    title: "Manage Home: {home_name}"
+    size: 9
+    items:
+      rename-button:
+        slot: 2
+        material: "minecraft:name_tag"
+        name: "<yellow>Rename Home</yellow>"
+        lore:
+          - "<gray>Click to change this home's name."
+      delete-button:
+        slot: 4
+        material: "minecraft:tnt"
+        name: "<red>Delete Home</red>"
+        lore:
+          - "<dark_red>This action cannot be undone!"
+      change-icon-button:
+        slot: 6
+        material: "minecraft:item_frame"
+        name: "<aqua>Change Icon</aqua>"
+        lore:
+          - "<gray>Click to choose a new icon."
+      back-button:
+        slot: 8
+        material: "minecraft:arrow"
+        name: "<gray>Back</gray>"
+        lore: []
+
+  icon-menu:
+    title: "Select an Icon"
+    size: 27
+    items:
+      # This list defines the items players can choose from.
+      # The plugin will automatically paginate if there are more items than available slots.
+      available-icons:
+        - "minecraft:crafting_table"
+        - "minecraft:furnace"
+        - "minecraft:chest"
+        - "minecraft:diamond_sword"
+        - "minecraft:diamond_pickaxe"
+        - "minecraft:diamond_axe"
+        - "minecraft:bow"
+        - "minecraft:shield"
+        - "minecraft:elytra"
+        - "minecraft:golden_apple"
+        - "minecraft:enchanted_golden_apple"
+        - "minecraft:ender_pearl"
+        - "minecraft:blaze_rod"
+        - "minecraft:nether_star"
+        - "minecraft:dragon_egg"
+        - "minecraft:totem_of_undying"
+        - "minecraft:heart_of_the_sea"
+        - "minecraft:nautilus_shell"
+        - "minecraft:trident"
+        - "minecraft:crossbow"
+        # Example for ItemsAdder - uncomment if you have ItemsAdder
+        # - "itemsadder:my_cool_block"
+        # - "itemsadder:custom_sword"
+      back-button:
+        slot: 26
+        material: "minecraft:arrow"
+        name: "<gray>Back</gray>"
+        lore: []
+
+# Dialog configuration for visual components
+dialogs:
+  create-home:
+    title: "<gold><bold>Tworzenie nowego domu</bold></gold>"
+    body:
+      - "<white>Wprowadź nazwę dla swojego nowego domu:</white>"
+      - ""
+      - "<gray>• Nazwa może zawierać tylko litery, cyfry i _</gray>"
+      - "<gray>• Maksymalna długość: 16 znaków</gray>"
+    buttons:
+      create:
+        text: "<green>Utwórz dom</green>"
+        tooltip: "<gray>Kliknij aby utworzyć dom</gray>"
+      cancel:
+        text: "<red>Anuluj</red>"
+        tooltip: "<gray>Kliknij aby anulować</gray>"
+    input:
+      placeholder: "<gray>Nazwa domu</gray>"
+      max-length: 16
+
+  delete-home:
+    title: "<red><bold>Usuwanie domu</bold></red>"
+    body:
+      - "<white>Czy na pewno chcesz usunąć dom '{home_name}'?</white>"
+      - ""
+      - "<red>Ta akcja jest nieodwracalna!</red>"
+    buttons:
+      confirm:
+        text: "<red>Usuń</red>"
+        tooltip: "<gray>Kliknij aby potwierdzić usunięcie</gray>"
+      cancel:
+        text: "<green>Anuluj</green>"
+        tooltip: "<gray>Kliknij aby anulować</gray>"
+
+  rename-home:
+    title: "<yellow><bold>Zmiana nazwy domu</bold></yellow>"
+    body:
+      - "<white>Wprowadź nową nazwę dla domu '{home_name}':</white>"
+      - ""
+      - "<gray>• Nazwa może zawierać tylko litery, cyfry i _</gray>"
+      - "<gray>• Maksymalna długość: 16 znaków</gray>"
+    buttons:
+      confirm:
+        text: "<green>Zmień nazwę</green>"
+        tooltip: "<gray>Kliknij aby zmienić nazwę</gray>"
+      cancel:
+        text: "<red>Anuluj</red>"
+        tooltip: "<gray>Kliknij aby anulować</gray>"
+    input:
+      placeholder: "<gray>Nowa nazwa domu</gray>"
+      max-length: 16
+
+# Data storage settings
+data:
+  # File format for storing player data (YAML or JSON)
+  format: "YAML"
+  # Auto-save interval in minutes
+  auto-save-interval: 5
