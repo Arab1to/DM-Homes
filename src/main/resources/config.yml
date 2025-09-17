@@ -50,6 +50,10 @@ messages:
   teleport-cancelled: "<red>Teleportation cancelled!</red>"
   teleport-cancelled-move: "<red>Teleportation cancelled - you moved!</red>"
   teleport-cancelled-damage: "<red>Teleportation cancelled - you took damage!</red>"
+  # Teleportation title messages
+  teleport-cancelled-title: "<red>Teleportation Cancelled</red>"
+  teleport-cancelled-subtitle-move: "<gray>You moved during teleportation!</gray>"
+  teleport-cancelled-subtitle-damage: "<gray>You took damage during teleportation!</gray>"
 
 # Home permission system
 homes:

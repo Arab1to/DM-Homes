@@ -61,7 +61,13 @@ public final class PlayerListener implements Listener {
         // Cancel any active teleportation
         this.plugin.getTeleportationManager().cancelTeleportation(player);
         
-        // Save player data
+        // Save player data immediately on quit
+        try {
+            this.plugin.getHomeManager().saveAllHomes();
+        } catch (final Exception exception) {
+            this.plugin.getLogger().warning("Failed to save homes for player " + player.getName() + " on quit: " + exception.getMessage());
+        }
+        
         this.plugin.getHomeDataManager().unloadPlayer(player.getUniqueId());
     }
 }

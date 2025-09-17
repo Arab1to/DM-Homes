@@ -69,6 +69,7 @@ public final class DMHomesPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
+            // Save all data before shutdown
             if (this.homeDataManager != null) {
                 this.homeDataManager.saveAllData();
             }
@@ -163,12 +164,18 @@ public final class DMHomesPlugin extends JavaPlugin {
     private void startTasks() {
         final int autoSaveInterval = this.configManager.getAutoSaveInterval();
         if (autoSaveInterval > 0) {
+            this.getLogger().info("Starting auto-save task with interval: " + autoSaveInterval + " minutes");
             this.getServer().getScheduler().runTaskTimerAsynchronously(
                 this,
-                this.homeDataManager::saveAllData,
+                () -> {
+                    this.homeDataManager.saveAllData();
+                    this.homeManager.saveAllHomes();
+                },
                 20L * 60L * autoSaveInterval, // Convert minutes to ticks
                 20L * 60L * autoSaveInterval
             );
+        } else {
+            this.getLogger().info("Auto-save disabled (interval: " + autoSaveInterval + ")");
         }
     }
 

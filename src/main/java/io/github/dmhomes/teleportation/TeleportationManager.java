@@ -67,9 +67,21 @@ public final class TeleportationManager {
         if (task != null) {
             task.cancel();
             
-            // Send cancellation message
+            // Send cancellation message and title
             final Component message = this.plugin.getMessageManager().getMessage("teleport-cancelled-" + reason);
             player.sendMessage(message);
+            
+            // Show cancellation title
+            final Component title = this.plugin.getMessageManager().getMessage("teleport-cancelled-title");
+            final Component subtitle = this.plugin.getMessageManager().getMessage("teleport-cancelled-subtitle-" + reason);
+            
+            final Title cancelTitle = Title.title(
+                title,
+                subtitle,
+                Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(500))
+            );
+            
+            player.showTitle(cancelTitle);
             
             // Play cancel sound
             this.playSound(player, "teleport-cancel");
@@ -132,14 +144,11 @@ public final class TeleportationManager {
      * @param player the player
      */
     private void showBlackScreen(final @NotNull Player player) {
-        final String blackscreenText = this.plugin.getConfigManager().getConfig()
-            .getString("teleportation.messages.blackscreen-title", ":blackscreen:");
-        
         final Component title = this.plugin.getMessageManager().getMessage("blackscreen-title");
         final Title blackscreenTitle = Title.title(
             title,
             Component.empty(),
-            Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(5), Duration.ofMillis(0))
+            Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0))
         );
         
         player.showTitle(blackscreenTitle);
@@ -174,8 +183,9 @@ public final class TeleportationManager {
 
         try {
             if (soundName.contains(":")) {
-                // Custom sound (ItemsAdder or other)
-                player.performCommand("playsound " + soundName + " master @s");
+                // Custom sound (ItemsAdder or other) - use server command to avoid chat output
+                this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), 
+                    "playsound " + soundName + " master " + player.getName());
             } else {
                 // Vanilla sound
                 final Sound sound = Sound.valueOf(soundName.toUpperCase().replace(".", "_"));

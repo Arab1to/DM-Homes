@@ -109,6 +109,14 @@ public final class ConfigManager {
     }
 
     /**
+     * Gets the plugin instance
+     * @return the plugin instance
+     */
+    public @NotNull DMHomesPlugin getPlugin() {
+        return this.plugin;
+    }
+
+    /**
      * Gets the GUI title for a specific GUI
      * @param guiName the GUI name
      * @return the title or a default value

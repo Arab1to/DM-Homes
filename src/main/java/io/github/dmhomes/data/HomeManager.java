@@ -108,15 +108,22 @@ public final class HomeManager {
 
             for (final String homeName : config.getKeys(false)) {
                 if (config.isConfigurationSection(homeName)) {
-                    continue; // Skip sections
-                }
+                    final Location location = config.getLocation(homeName + ".location");
+                    final long createdAt = config.getLong(homeName + ".created-at", System.currentTimeMillis());
 
-                final Location location = config.getLocation(homeName + ".location");
-                final long createdAt = config.getLong(homeName + ".created-at", System.currentTimeMillis());
+                    if (location != null) {
+                        final Home home = new Home(playerUuid, homeName, location, createdAt);
+                        homes.put(homeName.toLowerCase(), home);
+                    }
+                } else {
+                    // Handle old format without sections
+                    final Location location = config.getLocation(homeName + ".location");
+                    final long createdAt = config.getLong(homeName + ".created-at", System.currentTimeMillis());
 
-                if (location != null) {
-                    final Home home = new Home(playerUuid, homeName, location, createdAt);
-                    homes.put(homeName.toLowerCase(), home);
+                    if (location != null) {
+                        final Home home = new Home(playerUuid, homeName, location, createdAt);
+                        homes.put(homeName.toLowerCase(), home);
+                    }
                 }
             }
 
@@ -142,12 +149,19 @@ public final class HomeManager {
 
             if (homes != null && !homes.isEmpty()) {
                 for (final Home home : homes.values()) {
-                    config.set(home.getName() + ".location", home.getLocation());
-                    config.set(home.getName() + ".created-at", home.getCreatedAt());
+                    final String homeName = home.getName();
+                    config.set(homeName + ".location", home.getLocation());
+                    config.set(homeName + ".created-at", home.getCreatedAt());
+                }
+                
+                // Ensure parent directories exist
+                if (!playerFile.getParentFile().exists()) {
+                    playerFile.getParentFile().mkdirs();
                 }
             }
 
             config.save(playerFile);
+            this.plugin.getLogger().info("Saved " + (homes != null ? homes.size() : 0) + " homes for player " + playerUuid);
         } catch (final IOException exception) {
             throw new DMHomesException("Failed to save homes for player " + playerUuid, exception);
         }
