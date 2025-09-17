@@ -48,15 +48,14 @@ public final class HomeDialogBuilder {
 
         final UUID playerId = player.getUniqueId();
         
-        // Get dialog configuration
-        final var dialogConfig = this.plugin.getConfigManager().getConfig().getConfigurationSection("dialogs.create-home");
-        
         // Create dialog body
         final List<DialogBody> body = new ArrayList<>();
         body.add(DialogBody.plainMessage(Component.text("Wprowadź nazwę dla swojego nowego domu:", NamedTextColor.WHITE)));
         body.add(DialogBody.plainMessage(Component.empty()));
         body.add(DialogBody.plainMessage(Component.text("• Nazwa może zawierać tylko litery, cyfry i _", NamedTextColor.GRAY)));
         body.add(DialogBody.plainMessage(Component.text("• Maksymalna długość: 16 znaków", NamedTextColor.GRAY)));
+
+        this.plugin.getLogger().info("Creating home creation dialog for player: " + player.getName() + " with ID: " + playerId);
 
         return Dialog.create(factory -> factory.empty()
             .base(DialogBase.builder(Component.text("Tworzenie nowego domu", NamedTextColor.GOLD, TextDecoration.BOLD))
