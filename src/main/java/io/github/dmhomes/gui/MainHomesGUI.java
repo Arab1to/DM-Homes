@@ -249,26 +249,18 @@ public final class MainHomesGUI extends BaseGUI {
             return false;
         }
         
-        final String configMaterial = availableConfig.getString("material");
-        if (configMaterial == null) {
-            return false;
-        }
-        
-        // Check if it matches available slot material
-        final boolean materialMatches = this.matchesMaterial(item, configMaterial);
-        
-        if (!materialMatches) {
-            return false;
-        }
-        
-        // Additional check: make sure it's not an unavailable slot by checking display name
+        // Check display name to determine slot type
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
             final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
                 .serialize(item.getItemMeta().displayName());
-            return displayName.contains("Available Slot");
+            
+            this.plugin.getLogger().info("Slot " + slot + " display name: '" + displayName + "'");
+            
+            // Check if it's an available slot
+            return displayName.contains("Available Slot") || displayName.contains("Available");
         }
         
-        return true;
+        return false;
     }
 
     /**
@@ -291,6 +283,8 @@ public final class MainHomesGUI extends BaseGUI {
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
             final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
                 .serialize(item.getItemMeta().displayName());
+            
+            this.plugin.getLogger().info("Slot " + slot + " display name for unavailable check: '" + displayName + "'");
             return displayName.contains("Upgrade Required");
         }
         
@@ -317,10 +311,17 @@ public final class MainHomesGUI extends BaseGUI {
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
             final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
                 .serialize(item.getItemMeta().displayName());
-            return !displayName.contains("Upgrade Required") && !displayName.contains("Available Slot") && !displayName.contains("Close");
+            
+            this.plugin.getLogger().info("Slot " + slot + " display name for occupied check: '" + displayName + "'");
+            
+            // Check if it's an occupied slot (has "Home:" in the name)
+            return displayName.contains("Home:") || 
+                   (!displayName.contains("Upgrade Required") && 
+                    !displayName.contains("Available") && 
+                    !displayName.contains("Close"));
         }
         
-        return true;
+        return false;
     }
 
     /**
