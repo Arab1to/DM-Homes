@@ -37,29 +37,14 @@ public class DialogClickListener implements Listener {
             return;
         }
         
-        // Get player from the event
-        Player player = null;
-        try {
-            // Try to get player from the connection
-            final var connection = event.getCommonConnection();
-            if (connection instanceof Player) {
-                player = (Player) connection;
-            } else {
-                // Alternative method - get from server
-                final String playerName = connection.getProfile().getName();
-                if (playerName != null) {
-                    player = this.plugin.getServer().getPlayer(playerName);
-                }
-            }
-        } catch (final Exception e) {
-            this.plugin.getLogger().warning("Failed to get player from dialog event: " + e.getMessage());
+        // Get player from the event - the connection should be a Player instance
+        final var connection = event.getCommonConnection();
+        if (!(connection instanceof Player)) {
+            this.plugin.getLogger().warning("Dialog event connection is not a Player instance: " + connection.getClass().getSimpleName());
             return;
         }
         
-        if (player == null) {
-            this.plugin.getLogger().warning("Could not determine player from dialog event");
-            return;
-        }
+        final Player player = (Player) connection;
         
         this.plugin.getLogger().info("Processing dialog click for player: " + player.getName());
         
