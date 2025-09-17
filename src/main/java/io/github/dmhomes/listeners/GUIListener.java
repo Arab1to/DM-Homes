@@ -244,7 +244,7 @@ public final class GUIListener implements Listener {
         gui.close();
         
         player.sendMessage(this.plugin.getMessageManager()
-            .getMessage("home-teleported", "home_name", home.getName()));
+            .getMessage("teleportation.messages.teleport-success", "home_name", home.getName()));
         
         // Use our teleportation manager
         this.plugin.getTeleportationManager().teleportToHome(player, home);

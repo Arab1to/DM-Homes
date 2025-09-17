@@ -50,31 +50,49 @@ public final class HomeDialogBuilder {
         
         // Create dialog body
         final List<DialogBody> body = new ArrayList<>();
-        body.add(DialogBody.plainMessage(Component.text("Wprowadź nazwę dla swojego nowego domu:", NamedTextColor.WHITE)));
+        body.add(DialogBody.plainMessage(this.miniMessage.deserialize(
+            this.plugin.getConfigManager().getConfig().getString("dialogs.create-home.body.0", 
+                "<white>Wprowadź nazwę dla swojego nowego domu:</white>"))));
         body.add(DialogBody.plainMessage(Component.empty()));
-        body.add(DialogBody.plainMessage(Component.text("• Nazwa może zawierać tylko litery, cyfry i _", NamedTextColor.GRAY)));
-        body.add(DialogBody.plainMessage(Component.text("• Maksymalna długość: 16 znaków", NamedTextColor.GRAY)));
+        body.add(DialogBody.plainMessage(this.miniMessage.deserialize(
+            this.plugin.getConfigManager().getConfig().getString("dialogs.create-home.body.1", 
+                "<gray>• Nazwa może zawierać tylko litery, cyfry i _</gray>"))));
+        body.add(DialogBody.plainMessage(this.miniMessage.deserialize(
+            this.plugin.getConfigManager().getConfig().getString("dialogs.create-home.body.2", 
+                "<gray>• Maksymalna długość: 16 znaków</gray>"))));
 
         this.plugin.getLogger().info("Creating home creation dialog for player: " + player.getName() + " with ID: " + playerId);
 
         return Dialog.create(factory -> factory.empty()
-            .base(DialogBase.builder(Component.text("Tworzenie nowego domu", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .base(DialogBase.builder(this.miniMessage.deserialize(
+                this.plugin.getConfigManager().getConfig().getString("dialogs.create-home.title", 
+                    "<gold><bold>Tworzenie nowego domu</bold></gold>")))
                 .canCloseWithEscape(true)
                 .body(body)
                 .inputs(List.of(
-                    DialogInput.text("home_name", Component.text("Nazwa domu", NamedTextColor.GREEN))
+                    DialogInput.text("home_name", this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.create-home.input.placeholder", 
+                            "<green>Nazwa domu</green>")))
                         .maxLength(16)
                         .build()
                 ))
                 .build()
             )
             .type(DialogType.confirmation(
-                ActionButton.builder(Component.text("Utwórz dom", TextColor.color(0xAEFFC1)))
-                    .tooltip(Component.text("Kliknij aby utworzyć dom"))
+                ActionButton.builder(this.miniMessage.deserialize(
+                    this.plugin.getConfigManager().getConfig().getString("dialogs.create-home.buttons.create.text", 
+                        "<green>Utwórz dom</green>")))
+                    .tooltip(this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.create-home.buttons.create.tooltip", 
+                            "<gray>Kliknij aby utworzyć dom</gray>")))
                     .action(DialogAction.customClick(Key.key("dmhomes:create_home/" + playerId), null))
                     .build(),
-                ActionButton.builder(Component.text("Anuluj", TextColor.color(0xFFA0B1)))
-                    .tooltip(Component.text("Kliknij aby anulować"))
+                ActionButton.builder(this.miniMessage.deserialize(
+                    this.plugin.getConfigManager().getConfig().getString("dialogs.create-home.buttons.cancel.text", 
+                        "<red>Anuluj</red>")))
+                    .tooltip(this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.create-home.buttons.cancel.tooltip", 
+                            "<gray>Kliknij aby anulować</gray>")))
                     .action(null) // null action closes the dialog
                     .build()
             ))
@@ -98,22 +116,37 @@ public final class HomeDialogBuilder {
         final UUID playerId = player.getUniqueId();
         
         return Dialog.create(factory -> factory.empty()
-            .base(DialogBase.builder(Component.text("Usuwanie domu", NamedTextColor.RED, TextDecoration.BOLD))
+            .base(DialogBase.builder(this.miniMessage.deserialize(
+                this.plugin.getConfigManager().getConfig().getString("dialogs.delete-home.title", 
+                    "<red><bold>Usuwanie domu</bold></red>")))
                 .canCloseWithEscape(true)
                 .body(List.of(
-                    DialogBody.plainMessage(Component.text("Czy na pewno chcesz usunąć dom: " + homeName + "?", NamedTextColor.WHITE)),
+                    DialogBody.plainMessage(this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.delete-home.body.0", 
+                            "<white>Czy na pewno chcesz usunąć dom '{home_name}'?</white>")
+                            .replace("{home_name}", homeName))),
                     DialogBody.plainMessage(Component.empty()),
-                    DialogBody.plainMessage(Component.text("⚠ Ta akcja jest nieodwracalna!", NamedTextColor.RED, TextDecoration.BOLD))
+                    DialogBody.plainMessage(this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.delete-home.body.1", 
+                            "<red><bold>⚠ Ta akcja jest nieodwracalna!</bold></red>")))
                 ))
                 .build()
             )
             .type(DialogType.confirmation(
-                ActionButton.builder(Component.text("Tak, usuń", TextColor.color(0xFF6B6B)))
-                    .tooltip(Component.text("Kliknij aby potwierdzić usunięcie"))
+                ActionButton.builder(this.miniMessage.deserialize(
+                    this.plugin.getConfigManager().getConfig().getString("dialogs.delete-home.buttons.confirm.text", 
+                        "<red>Tak, usuń</red>")))
+                    .tooltip(this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.delete-home.buttons.confirm.tooltip", 
+                            "<gray>Kliknij aby potwierdzić usunięcie</gray>")))
                     .action(DialogAction.customClick(Key.key("dmhomes:delete_home/" + playerId), null))
                     .build(),
-                ActionButton.builder(Component.text("Nie, anuluj", TextColor.color(0xAEFFC1)))
-                    .tooltip(Component.text("Kliknij aby anulować"))
+                ActionButton.builder(this.miniMessage.deserialize(
+                    this.plugin.getConfigManager().getConfig().getString("dialogs.delete-home.buttons.cancel.text", 
+                        "<green>Nie, anuluj</green>")))
+                    .tooltip(this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.delete-home.buttons.cancel.tooltip", 
+                            "<gray>Kliknij aby anulować</gray>")))
                     .action(null) // null action closes the dialog
                     .build()
             ))
@@ -137,29 +170,47 @@ public final class HomeDialogBuilder {
         final UUID playerId = player.getUniqueId();
         
         return Dialog.create(factory -> factory.empty()
-            .base(DialogBase.builder(Component.text("Zmiana nazwy domu", NamedTextColor.YELLOW, TextDecoration.BOLD))
+            .base(DialogBase.builder(this.miniMessage.deserialize(
+                this.plugin.getConfigManager().getConfig().getString("dialogs.rename-home.title", 
+                    "<yellow><bold>Zmiana nazwy domu</bold></yellow>")))
                 .canCloseWithEscape(true)
                 .body(List.of(
-                    DialogBody.plainMessage(Component.text("Wprowadź nową nazwę dla domu:", NamedTextColor.WHITE)),
-                    DialogBody.plainMessage(Component.text("Obecna nazwa: " + oldHomeName, NamedTextColor.GRAY)),
+                    DialogBody.plainMessage(this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.rename-home.body.0", 
+                            "<white>Wprowadź nową nazwę dla domu '{home_name}':</white>")
+                            .replace("{home_name}", oldHomeName))),
                     DialogBody.plainMessage(Component.empty()),
-                    DialogBody.plainMessage(Component.text("• Nazwa może zawierać tylko litery, cyfry i _", NamedTextColor.GRAY)),
-                    DialogBody.plainMessage(Component.text("• Maksymalna długość: 16 znaków", NamedTextColor.GRAY))
+                    DialogBody.plainMessage(this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.rename-home.body.1", 
+                            "<gray>• Nazwa może zawierać tylko litery, cyfry i _</gray>"))),
+                    DialogBody.plainMessage(this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.rename-home.body.2", 
+                            "<gray>• Maksymalna długość: 16 znaków</gray>")))
                 ))
                 .inputs(List.of(
-                    DialogInput.text("new_home_name", Component.text("Nowa nazwa", NamedTextColor.GREEN))
+                    DialogInput.text("new_home_name", this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.rename-home.input.placeholder", 
+                            "<green>Nowa nazwa</green>")))
                         .maxLength(16)
                         .build()
                 ))
                 .build()
             )
             .type(DialogType.confirmation(
-                ActionButton.builder(Component.text("Zmień nazwę", TextColor.color(0xFFE066)))
-                    .tooltip(Component.text("Kliknij aby zmienić nazwę"))
+                ActionButton.builder(this.miniMessage.deserialize(
+                    this.plugin.getConfigManager().getConfig().getString("dialogs.rename-home.buttons.confirm.text", 
+                        "<yellow>Zmień nazwę</yellow>")))
+                    .tooltip(this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.rename-home.buttons.confirm.tooltip", 
+                            "<gray>Kliknij aby zmienić nazwę</gray>")))
                     .action(DialogAction.customClick(Key.key("dmhomes:rename_home/" + playerId), null))
                     .build(),
-                ActionButton.builder(Component.text("Anuluj", TextColor.color(0xFFA0B1)))
-                    .tooltip(Component.text("Kliknij aby anulować"))
+                ActionButton.builder(this.miniMessage.deserialize(
+                    this.plugin.getConfigManager().getConfig().getString("dialogs.rename-home.buttons.cancel.text", 
+                        "<red>Anuluj</red>")))
+                    .tooltip(this.miniMessage.deserialize(
+                        this.plugin.getConfigManager().getConfig().getString("dialogs.rename-home.buttons.cancel.tooltip", 
+                            "<gray>Kliknij aby anulować</gray>")))
                     .action(null) // null action closes the dialog
                     .build()
             ))

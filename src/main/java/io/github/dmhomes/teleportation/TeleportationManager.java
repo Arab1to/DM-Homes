@@ -68,12 +68,12 @@ public final class TeleportationManager {
             task.cancel();
             
             // Send cancellation message and title
-            final Component message = this.plugin.getMessageManager().getMessage("teleport-cancelled-" + reason);
+            final Component message = this.plugin.getMessageManager().getMessage("teleportation.teleport-cancelled-" + reason);
             player.sendMessage(message);
             
             // Show cancellation title
-            final Component title = this.plugin.getMessageManager().getMessage("teleport-cancelled-title");
-            final Component subtitle = this.plugin.getMessageManager().getMessage("teleport-cancelled-subtitle-" + reason);
+            final Component title = this.plugin.getMessageManager().getMessage("teleportation.messages.teleport-cancelled-title");
+            final Component subtitle = this.plugin.getMessageManager().getMessage("teleportation.messages.teleport-cancelled-subtitle-" + reason);
             
             final Title cancelTitle = Title.title(
                 title,
@@ -144,7 +144,7 @@ public final class TeleportationManager {
      * @param player the player
      */
     private void showBlackScreen(final @NotNull Player player) {
-        final Component title = this.plugin.getMessageManager().getMessage("blackscreen-title");
+        final Component title = this.plugin.getMessageManager().getMessage("teleportation.messages.blackscreen-title");
         final Title blackscreenTitle = Title.title(
             title,
             Component.empty(),
@@ -174,6 +174,11 @@ public final class TeleportationManager {
      * @param soundKey the sound configuration key
      */
     private void playSound(final @NotNull Player player, final @NotNull String soundKey) {
+        // Check if sounds are enabled
+        if (!this.plugin.getConfigManager().getConfig().getBoolean("teleportation.sounds.enabled", true)) {
+            return;
+        }
+        
         final String soundName = this.plugin.getConfigManager().getConfig()
             .getString("teleportation.sounds." + soundKey);
         
@@ -183,16 +188,19 @@ public final class TeleportationManager {
 
         try {
             if (soundName.contains(":")) {
-                // Custom sound (ItemsAdder or other) - use server command to avoid chat output
-                this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), 
-                    "playsound " + soundName + " master " + player.getName());
+                // Custom sound (ItemsAdder or other) - use playsound command silently
+                this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
+                    this.plugin.getServer().dispatchCommand(this.plugin.getServer().getConsoleSender(), 
+                        "playsound " + soundName + " master " + player.getName() + " ~ ~ ~ 1.0 1.0");
+                });
             } else {
                 // Vanilla sound
-                final Sound sound = Sound.valueOf(soundName.toUpperCase().replace(".", "_"));
+                final Sound sound = Sound.valueOf(soundName.toUpperCase().replace("MINECRAFT:", "").replace(".", "_"));
                 player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
             }
         } catch (final Exception exception) {
             this.plugin.getLogger().warning("Failed to play sound: " + soundName);
+            exception.printStackTrace();
         }
     }
 
@@ -249,9 +257,9 @@ public final class TeleportationManager {
 
         private void showCountdown() {
             final Component title = TeleportationManager.this.plugin.getMessageManager()
-                .getMessage("warmup-title");
+                .getMessage("teleportation.messages.warmup-title");
             final Component subtitle = TeleportationManager.this.plugin.getMessageManager()
-                .getMessage("warmup-subtitle", "time", String.valueOf(this.timeLeft));
+                .getMessage("teleportation.messages.warmup-subtitle", "time", String.valueOf(this.timeLeft));
 
             final Title countdownTitle = Title.title(
                 title,

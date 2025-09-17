@@ -8,6 +8,7 @@ teleportation:
   blackscreen-effect: true # Enable black screen effect
   blackscreen-duration: 50 # Duration of black screen fade in ticks
   sounds:
+    enabled: true # Enable/disable all teleportation sounds
     teleport-start: "minecraft:block.portal.ambient"
     teleport-end: "utilsandtools:teleportation_end"
     teleport-cancel: "minecraft:block.note_block.bass"
@@ -16,9 +17,11 @@ teleportation:
     warmup-subtitle: "<gray>Don't move! {time}s</gray>"
     blackscreen-title: ":blackscreen:"
     teleport-success: "<green>Teleported to {home_name}!</green>"
-    teleport-cancelled: "<red>Teleportation cancelled!</red>"
     teleport-cancelled-move: "<red>Teleportation cancelled - you moved!</red>"
     teleport-cancelled-damage: "<red>Teleportation cancelled - you took damage!</red>"
+    teleport-cancelled-title: "<red>Teleportation Cancelled</red>"
+    teleport-cancelled-subtitle-move: "<gray>You moved during teleportation!</gray>"
+    teleport-cancelled-subtitle-damage: "<gray>You took damage during teleportation!</gray>"
 
 # All messages used in the plugin. Supports MiniMessage format.
 messages:
@@ -166,10 +169,9 @@ dialogs:
   create-home:
     title: "<gold><bold>Tworzenie nowego domu</bold></gold>"
     body:
-      - "<white>Wprowadź nazwę dla swojego nowego domu:</white>"
-      - ""
-      - "<gray>• Nazwa może zawierać tylko litery, cyfry i _</gray>"
-      - "<gray>• Maksymalna długość: 16 znaków</gray>"
+      0: "<white>Wprowadź nazwę dla swojego nowego domu:</white>"
+      1: "<gray>• Nazwa może zawierać tylko litery, cyfry i _</gray>"
+      2: "<gray>• Maksymalna długość: 16 znaków</gray>"
     buttons:
       create:
         text: "<green>Utwórz dom</green>"
@@ -184,24 +186,22 @@ dialogs:
   delete-home:
     title: "<red><bold>Usuwanie domu</bold></red>"
     body:
-      - "<white>Czy na pewno chcesz usunąć dom '{home_name}'?</white>"
-      - ""
-      - "<red>Ta akcja jest nieodwracalna!</red>"
+      0: "<white>Czy na pewno chcesz usunąć dom '{home_name}'?</white>"
+      1: "<red><bold>⚠ Ta akcja jest nieodwracalna!</bold></red>"
     buttons:
       confirm:
-        text: "<red>Usuń</red>"
+        text: "<red>Tak, usuń</red>"
         tooltip: "<gray>Kliknij aby potwierdzić usunięcie</gray>"
       cancel:
-        text: "<green>Anuluj</green>"
+        text: "<green>Nie, anuluj</green>"
         tooltip: "<gray>Kliknij aby anulować</gray>"
 
   rename-home:
     title: "<yellow><bold>Zmiana nazwy domu</bold></yellow>"
     body:
-      - "<white>Wprowadź nową nazwę dla domu '{home_name}':</white>"
-      - ""
-      - "<gray>• Nazwa może zawierać tylko litery, cyfry i _</gray>"
-      - "<gray>• Maksymalna długość: 16 znaków</gray>"
+      0: "<white>Wprowadź nową nazwę dla domu '{home_name}':</white>"
+      1: "<gray>• Nazwa może zawierać tylko litery, cyfry i _</gray>"
+      2: "<gray>• Maksymalna długość: 16 znaków</gray>"
     buttons:
       confirm:
         text: "<green>Zmień nazwę</green>"
@@ -210,7 +210,7 @@ dialogs:
         text: "<red>Anuluj</red>"
         tooltip: "<gray>Kliknij aby anulować</gray>"
     input:
-      placeholder: "<gray>Nowa nazwa domu</gray>"
+      placeholder: "<green>Nowa nazwa</green>"
       max-length: 16
 
 # Data storage settings
