@@ -254,12 +254,8 @@ public final class MainHomesGUI extends BaseGUI {
             return false;
         }
         
-        // Check if it matches available slot material and has the right display name
-        final String itemKey = item.getType().getKey().toString();
-        final String itemKeyUpper = "minecraft:" + item.getType().name().toUpperCase();
-        final boolean materialMatches = configMaterial.equals(itemKey) ||
-            configMaterial.equals(itemKeyUpper) ||
-            configMaterial.equalsIgnoreCase(itemKey);
+        // Check if it matches available slot material
+        final boolean materialMatches = this.matchesMaterial(item, configMaterial);
         
         if (!materialMatches) {
             return false;
@@ -267,8 +263,9 @@ public final class MainHomesGUI extends BaseGUI {
         
         // Additional check: make sure it's not an unavailable slot by checking display name
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
-            final String displayName = item.getItemMeta().getDisplayName();
-            return !displayName.contains("Upgrade Required");
+            final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
+                .serialize(item.getItemMeta().displayName());
+            return displayName.contains("Available Slot");
         }
         
         return true;
@@ -292,7 +289,8 @@ public final class MainHomesGUI extends BaseGUI {
         
         // Check if it has the "Upgrade Required" display name
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
-            final String displayName = item.getItemMeta().getDisplayName();
+            final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
+                .serialize(item.getItemMeta().displayName());
             return displayName.contains("Upgrade Required");
         }
         
@@ -315,33 +313,11 @@ public final class MainHomesGUI extends BaseGUI {
             return false;
         }
         
-        final ConfigurationSection occupiedConfig = this.plugin.getConfigManager()
-            .getItemSection(GUI_NAME, "occupied-slot");
-        
-        if (occupiedConfig == null) {
-            return false;
-        }
-        
-        final String configMaterial = occupiedConfig.getString("material");
-        if (configMaterial == null) {
-            return false;
-        }
-        
-        // Check if it matches occupied slot material
-        final String itemKey = item.getType().getKey().toString();
-        final String itemKeyUpper = "minecraft:" + item.getType().name().toUpperCase();
-        final boolean materialMatches = configMaterial.equals(itemKey) ||
-            configMaterial.equals(itemKeyUpper) ||
-            configMaterial.equalsIgnoreCase(itemKey);
-        
-        if (!materialMatches) {
-            return false;
-        }
-        
-        // Additional check: make sure it's not an unavailable slot by checking display name
+        // Check if it's not an available or unavailable slot
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
-            final String displayName = item.getItemMeta().getDisplayName();
-            return !displayName.contains("Upgrade Required") && !displayName.contains("Available Slot");
+            final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
+                .serialize(item.getItemMeta().displayName());
+            return !displayName.contains("Upgrade Required") && !displayName.contains("Available Slot") && !displayName.contains("Close");
         }
         
         return true;
@@ -362,5 +338,20 @@ public final class MainHomesGUI extends BaseGUI {
         
         final int closeButtonSlot = closeButtonConfig.getInt("slot", 13);
         return slot == closeButtonSlot;
+    }
+    
+    /**
+     * Helper method to check if an item matches a material configuration
+     * @param item the item to check
+     * @param configMaterial the material from config
+     * @return true if they match
+     */
+    private boolean matchesMaterial(final @NotNull ItemStack item, final @NotNull String configMaterial) {
+        final String itemKey = item.getType().getKey().toString();
+        final String itemName = item.getType().name();
+        
+        return configMaterial.equals(itemKey) ||
+               configMaterial.equals("minecraft:" + itemName.toLowerCase()) ||
+               configMaterial.equalsIgnoreCase(itemName);
     }
 }

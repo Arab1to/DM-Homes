@@ -291,13 +291,17 @@ public final class GUIListener implements Listener {
         // Set the custom icon
         this.plugin.getHomeDataManager().setHomeIcon(player.getUniqueId(), home.getName(), iconMaterial);
         
-        gui.close();
-        
         player.sendMessage(this.plugin.getMessageManager()
             .getMessage("home-icon-changed", "home_name", home.getName()));
         
-        // Refresh the parent GUI
-        gui.getParentGUI().getParentGUI().refresh();
-        gui.getParentGUI().getParentGUI().open();
+        // Close current GUI and refresh the main homes GUI
+        gui.close();
+        
+        // Schedule GUI refresh for next tick to ensure proper closing
+        this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
+            // Get the main homes GUI and refresh it
+            final var mainGUI = new MainHomesGUI(this.plugin, player);
+            mainGUI.open();
+        });
     }
 }

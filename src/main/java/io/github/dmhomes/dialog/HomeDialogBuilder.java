@@ -13,6 +13,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,9 +25,11 @@ import java.util.UUID;
 /**
  * Builder for creating home-related dialogs using Paper Dialog API
  */
+@SuppressWarnings("UnstableApiUsage")
 public final class HomeDialogBuilder {
 
     private final DMHomesPlugin plugin;
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public HomeDialogBuilder(final @NotNull DMHomesPlugin plugin) {
         this.plugin = Objects.requireNonNull(plugin, "Plugin cannot be null");
@@ -46,45 +49,33 @@ public final class HomeDialogBuilder {
         final UUID playerId = player.getUniqueId();
         
         // Get dialog configuration
-        final var dialogConfig = this.plugin.getConfig().getConfigurationSection("dialogs.create-home");
-        if (dialogConfig == null) {
-            // Fallback to hardcoded values
-            return createFallbackCreateHomeDialog(playerId);
-        }
-
-        final var title = dialogConfig.getString("title", "<gold><bold>Tworzenie nowego domu</bold></gold>");
-        final var bodyLines = dialogConfig.getStringList("body");
-        final var createButtonText = dialogConfig.getString("buttons.create.text", "<green>Utwórz dom</green>");
-        final var createButtonTooltip = dialogConfig.getString("buttons.create.tooltip", "<gray>Kliknij aby utworzyć dom</gray>");
-        final var cancelButtonText = dialogConfig.getString("buttons.cancel.text", "<red>Anuluj</red>");
-        final var cancelButtonTooltip = dialogConfig.getString("buttons.cancel.tooltip", "<gray>Kliknij aby anulować</gray>");
-        final var inputPlaceholder = dialogConfig.getString("input.placeholder", "<gray>Nazwa domu</gray>");
-        final var inputMaxLength = dialogConfig.getInt("input.max-length", 16);
-
-        // Convert body lines to DialogBody
+        final var dialogConfig = this.plugin.getConfigManager().getConfig().getConfigurationSection("dialogs.create-home");
+        
+        // Create dialog body
         final List<DialogBody> body = new ArrayList<>();
-        for (final String line : bodyLines) {
-            body.add(DialogBody.plainMessage(this.plugin.getMessageManager().getMessage(line)));
-        }
+        body.add(DialogBody.plainMessage(Component.text("Wprowadź nazwę dla swojego nowego domu:", NamedTextColor.WHITE)));
+        body.add(DialogBody.plainMessage(Component.empty()));
+        body.add(DialogBody.plainMessage(Component.text("• Nazwa może zawierać tylko litery, cyfry i _", NamedTextColor.GRAY)));
+        body.add(DialogBody.plainMessage(Component.text("• Maksymalna długość: 16 znaków", NamedTextColor.GRAY)));
 
         return Dialog.create(factory -> factory.empty()
-            .base(DialogBase.builder(this.plugin.getMessageManager().getMessage(title))
+            .base(DialogBase.builder(Component.text("Tworzenie nowego domu", NamedTextColor.GOLD, TextDecoration.BOLD))
                 .canCloseWithEscape(true)
                 .body(body)
                 .inputs(List.of(
-                    DialogInput.text("home_name", this.plugin.getMessageManager().getMessage(inputPlaceholder))
-                        .maxLength(inputMaxLength)
+                    DialogInput.text("home_name", Component.text("Nazwa domu", NamedTextColor.GREEN))
+                        .maxLength(16)
                         .build()
                 ))
                 .build()
             )
             .type(DialogType.confirmation(
-                ActionButton.builder(this.plugin.getMessageManager().getMessage(createButtonText))
-                    .tooltip(this.plugin.getMessageManager().getMessage(createButtonTooltip))
+                ActionButton.builder(Component.text("Utwórz dom", TextColor.color(0xAEFFC1)))
+                    .tooltip(Component.text("Kliknij aby utworzyć dom"))
                     .action(DialogAction.customClick(Key.key("dmhomes:create_home/" + playerId), null))
                     .build(),
-                ActionButton.builder(this.plugin.getMessageManager().getMessage(cancelButtonText))
-                    .tooltip(this.plugin.getMessageManager().getMessage(cancelButtonTooltip))
+                ActionButton.builder(Component.text("Anuluj", TextColor.color(0xFFA0B1)))
+                    .tooltip(Component.text("Kliknij aby anulować"))
                     .action(null) // null action closes the dialog
                     .build()
             ))
@@ -175,40 +166,4 @@ public final class HomeDialogBuilder {
             ))
         );
     }
-
-    /**
-     * Creates a fallback create home dialog when config is not available
-     * @param playerId the player ID
-     * @return the fallback dialog
-     */
-    private @NotNull Dialog createFallbackCreateHomeDialog(final @NotNull UUID playerId) {
-        return Dialog.create(factory -> factory.empty()
-            .base(DialogBase.builder(Component.text("Tworzenie nowego domu", NamedTextColor.GOLD, TextDecoration.BOLD))
-                .canCloseWithEscape(true)
-                .body(List.of(
-                    DialogBody.plainMessage(Component.text("Wprowadź nazwę dla swojego nowego domu:", NamedTextColor.WHITE)),
-                    DialogBody.plainMessage(Component.empty()),
-                    DialogBody.plainMessage(Component.text("• Nazwa może zawierać tylko litery, cyfry i _", NamedTextColor.GRAY)),
-                    DialogBody.plainMessage(Component.text("• Maksymalna długość: 16 znaków", NamedTextColor.GRAY))
-                ))
-                .inputs(List.of(
-                    DialogInput.text("home_name", Component.text("Nazwa domu", NamedTextColor.GREEN))
-                        .maxLength(16)
-                        .build()
-                ))
-                .build()
-            )
-            .type(DialogType.confirmation(
-                ActionButton.builder(Component.text("Utwórz dom", TextColor.color(0xAEFFC1)))
-                    .tooltip(Component.text("Kliknij aby utworzyć dom"))
-                    .action(DialogAction.customClick(Key.key("dmhomes:create_home/" + playerId), null))
-                    .build(),
-                ActionButton.builder(Component.text("Anuluj", TextColor.color(0xFFA0B1)))
-                    .tooltip(Component.text("Kliknij aby anulować"))
-                    .action(null) // null action closes the dialog
-                    .build()
-            ))
-        );
-    }
-
 }

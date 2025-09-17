@@ -34,7 +34,21 @@ public final class MessageManager {
         
         String message = this.configManager.getMessage(messageKey);
         if (message == null) {
-            message = "<red>Missing message: " + messageKey + "</red>";
+            // Return a more user-friendly fallback message
+            switch (messageKey) {
+                case "warmup-title":
+                    message = "<yellow>Teleporting...</yellow>";
+                    break;
+                case "warmup-subtitle":
+                    message = "<gray>Don't move! {time}s</gray>";
+                    break;
+                case "blackscreen-title":
+                    message = ":blackscreen:";
+                    break;
+                default:
+                    message = "<red>Missing message: " + messageKey + "</red>";
+                    break;
+            }
         }
         
         // Replace placeholders

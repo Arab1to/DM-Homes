@@ -25,9 +25,10 @@ public class DialogClickListener implements Listener {
     }
 
     @EventHandler
+    @SuppressWarnings("UnstableApiUsage")
     public void onDialogClick(final @NotNull PlayerCustomClickEvent event) {
         final Key key = event.getIdentifier();
-        final String keyString = key.key().asString();
+        final String keyString = key.asString();
         
         // Check if this is one of our dialog actions
         if (!keyString.startsWith("dmhomes:")) {
@@ -35,11 +36,7 @@ public class DialogClickListener implements Listener {
         }
         
         // Get player from the connection
-        if (!(event.getCommonConnection() instanceof io.papermc.paper.connection.PlayerGameConnection gameConnection)) {
-            return;
-        }
-        
-        final Player player = gameConnection.getPlayer();
+        final Player player = event.getPlayer();
         if (player == null) {
             return;
         }
@@ -90,13 +87,47 @@ public class DialogClickListener implements Listener {
                 return;
             }
             
-            // Execute the callback
-            final var homeCreationDialog = this.plugin.getHomeCreationDialog();
-            final Consumer<String> callback = homeCreationDialog.getPendingCallback();
-            if (callback != null) {
-                callback.accept(cleanName);
-                homeCreationDialog.clearPendingCallbacks();
+            // Create the home directly here instead of using callback
+            try {
+                final boolean success = this.plugin.getHomeManager()
+                    .createHome(player, cleanName, player.getLocation());
+                
+                if (success) {
+                    // Send success message with nice formatting
+                    player.sendMessage(Component.empty());
+                    player.sendMessage(Component.text("✓ Dom został utworzony pomyślnie!")
+                        .color(NamedTextColor.GREEN));
+                    player.sendMessage(Component.text("Nazwa: ")
+                        .color(NamedTextColor.GRAY)
+                        .append(Component.text(cleanName).color(NamedTextColor.WHITE)));
+                    player.sendMessage(Component.text("Lokalizacja: ")
+                        .color(NamedTextColor.GRAY)
+                        .append(Component.text(player.getLocation().getBlockX() + ", " + 
+                            player.getLocation().getBlockY() + ", " + 
+                            player.getLocation().getBlockZ()).color(NamedTextColor.WHITE)));
+                    player.sendMessage(Component.empty());
+                } else {
+                    // Check specific failure reasons
+                    if (this.plugin.getHomeManager().hasHome(player, cleanName)) {
+                        player.sendMessage(Component.text("✗ Dom o tej nazwie już istnieje!")
+                            .color(NamedTextColor.RED));
+                    } else if (!this.plugin.getHomeManager().canCreateHome(player)) {
+                        player.sendMessage(this.plugin.getMessageManager()
+                            .getMessage("error-max-homes"));
+                    } else {
+                        player.sendMessage(this.plugin.getMessageManager()
+                            .getMessage("error-invalid-name"));
+                    }
+                }
+            } catch (final Exception exception) {
+                this.plugin.getLogger().warning("Failed to create home for player " 
+                    + player.getName() + ": " + exception.getMessage());
+                player.sendMessage(Component.text("✗ Wystąpił błąd podczas tworzenia domu!")
+                    .color(NamedTextColor.RED));
             }
+            
+            // Clear any pending callbacks
+            this.plugin.getHomeCreationDialog().clearPendingCallbacks();
             
         } catch (final Exception exception) {
             this.plugin.getLogger().severe("Error handling home creation dialog click: " + exception.getMessage());
@@ -176,5 +207,4 @@ public class DialogClickListener implements Listener {
             player.sendMessage(Component.text("✗ Wystąpił błąd podczas przetwarzania dialogu!", NamedTextColor.RED));
         }
     }
-
 }

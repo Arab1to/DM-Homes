@@ -42,6 +42,14 @@ messages:
   home-list-header: "<yellow>Your homes ({count}/{max}):</yellow>"
   home-list-entry: "<gray>- <white>{home_name}</white> <dark_gray>({world}, {x}, {y}, {z})</dark_gray></gray>"
   home-list-empty: "<gray>You don't have any homes set.</gray>"
+  # Teleportation messages
+  warmup-title: "<yellow>Teleporting...</yellow>"
+  warmup-subtitle: "<gray>Don't move! {time}s</gray>"
+  blackscreen-title: ":blackscreen:"
+  teleport-success: "<green>Teleported to {home_name}!</green>"
+  teleport-cancelled: "<red>Teleportation cancelled!</red>"
+  teleport-cancelled-move: "<red>Teleportation cancelled - you moved!</red>"
+  teleport-cancelled-damage: "<red>Teleportation cancelled - you took damage!</red>"
 
 # Home permission system
 homes:

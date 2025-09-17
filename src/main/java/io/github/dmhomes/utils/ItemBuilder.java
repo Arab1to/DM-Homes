@@ -182,11 +182,8 @@ public class ItemBuilder {
     private @Nullable Material handleItemsAdder(final @NotNull String itemsAdderString) {
         // Check if ItemsAdder is available
         if (Bukkit.getPluginManager().getPlugin("ItemsAdder") == null) {
-            // Return a reasonable fallback material instead of BARRIER
-            if (itemsAdderString.contains("pixel")) {
-                return Material.BARRIER; // pixel:pixel should be barrier
-            }
-            return Material.STONE; // Other ItemsAdder items fallback to stone
+            // Return a reasonable fallback material
+            return Material.STONE; // Fallback to stone for all ItemsAdder items
         }
         
         try {
