@@ -250,9 +250,21 @@ public final class MainHomesGUI extends BaseGUI {
             return false;
         }
         
-        // Check material type instead of display name
-        final String configMaterial = availableConfig.getString("material", "minecraft:green_bed");
-        return this.matchesMaterial(item, configMaterial);
+        // Check if this slot contains an available slot item by checking if it's not occupied or unavailable
+        final List<Home> playerHomes = this.plugin.getHomeManager().getHomes(this.player);
+        final int homeIndex = slot - 1; // Convert GUI slot (1-7) to home index (0-6)
+        
+        // If there's no home at this index, and it's within the player's allowed slots, it's available
+        if (homeIndex >= playerHomes.size()) {
+            final int maxHomes = this.plugin.getHomeManager().getMaxHomes(this.player);
+            final int maxGuiSlots = 7;
+            final int playerMaxSlots = Math.min(maxGuiSlots, maxHomes == -1 ? maxGuiSlots : maxHomes);
+            
+            // Check if this slot is within the player's allowed slots
+            return homeIndex < playerMaxSlots;
+        }
+        
+        return false;
     }
 
     /**
@@ -271,16 +283,21 @@ public final class MainHomesGUI extends BaseGUI {
             return false;
         }
         
-        final ConfigurationSection unavailableConfig = this.plugin.getConfigManager()
-            .getItemSection(GUI_NAME, "unavailable-slot");
+        // Check if this slot is beyond the player's allowed slots
+        final List<Home> playerHomes = this.plugin.getHomeManager().getHomes(this.player);
+        final int homeIndex = slot - 1; // Convert GUI slot (1-7) to home index (0-6)
         
-        if (unavailableConfig == null) {
-            return false;
+        // If there's no home at this index and it's beyond allowed slots, it's unavailable
+        if (homeIndex >= playerHomes.size()) {
+            final int maxHomes = this.plugin.getHomeManager().getMaxHomes(this.player);
+            final int maxGuiSlots = 7;
+            final int playerMaxSlots = Math.min(maxGuiSlots, maxHomes == -1 ? maxGuiSlots : maxHomes);
+            
+            // Check if this slot is beyond the player's allowed slots
+            return homeIndex >= playerMaxSlots && homeIndex < 7; // Only show unavailable slots up to slot 7
         }
         
-        // Check material type instead of display name
-        final String configMaterial = unavailableConfig.getString("material", "minecraft:red_bed");
-        return this.matchesMaterial(item, configMaterial);
+        return false;
     }
 
     /**
