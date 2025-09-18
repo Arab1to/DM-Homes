@@ -180,12 +180,12 @@ public final class HomeCreationDialog {
             final boolean success = this.plugin.getHomeManager().deleteHome(player, homeName);
             
             if (success) {
-                player.sendMessage(TeleportationManager.this.plugin.getMessageManager()
+                player.sendMessage(this.plugin.getMessageManager()
                     .getMessage("home-deleted", "home_name", homeName));
             } else {
-                player.sendMessage(TeleportationManager.this.plugin.getMessageManager()
+                player.sendMessage(this.plugin.getMessageManager()
                     .getMessage("error-delete-failed", "home_name", homeName));
-                TeleportationManager.this.plugin.getTeleportationManager().playErrorSound(player);
+                this.plugin.getTeleportationManager().playErrorSound(player);
             }
         } catch (final DMHomesException exception) {
             this.plugin.getLogger().warning("Failed to delete home for player " 
