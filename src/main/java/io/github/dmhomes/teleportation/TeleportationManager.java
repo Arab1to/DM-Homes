@@ -130,7 +130,7 @@ public final class TeleportationManager {
             
             // Send success message
             final Component message = this.plugin.getMessageManager()
-                .getMessage("teleport-success", "home_name", home.getName());
+                .getMessage("teleportation-messages-teleport-success", "home_name", home.getName());
             player.sendMessage(message);
             
             // Fade out black screen
@@ -144,7 +144,7 @@ public final class TeleportationManager {
      * @param player the player
      */
     private void showBlackScreen(final @NotNull Player player) {
-        final Component title = this.plugin.getMessageManager().getMessage("teleportation.messages.blackscreen-title");
+        final Component title = this.plugin.getMessageManager().getMessage("teleportation-messages-blackscreen-title");
         final Title blackscreenTitle = Title.title(
             title,
             Component.empty(),
@@ -274,9 +274,9 @@ public final class TeleportationManager {
 
         private void showCountdown() {
             final Component title = TeleportationManager.this.plugin.getMessageManager()
-                .getMessage("teleportation.messages.warmup-title");
+                .getMessage("teleportation-messages-warmup-title");
             final Component subtitle = TeleportationManager.this.plugin.getMessageManager()
-                .getMessage("teleportation.messages.warmup-subtitle", "time", String.valueOf(this.timeLeft));
+                .getMessage("teleportation-messages-warmup-subtitle", "time", String.valueOf(this.timeLeft));
 
             final Title countdownTitle = Title.title(
                 title,
