@@ -250,16 +250,9 @@ public final class MainHomesGUI extends BaseGUI {
             return false;
         }
         
-        // Check display name to determine slot type
-        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
-            final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
-                .serialize(item.getItemMeta().displayName());
-            
-            // Check if it's an available slot
-            return displayName.contains("Available Slot") || displayName.contains("Available");
-        }
-        
-        return false;
+        // Check material type instead of display name
+        final String configMaterial = availableConfig.getString("material", "minecraft:green_bed");
+        return this.matchesMaterial(item, configMaterial);
     }
 
     /**
@@ -278,15 +271,16 @@ public final class MainHomesGUI extends BaseGUI {
             return false;
         }
         
-        // Check if it has the "Upgrade Required" display name
-        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
-            final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
-                .serialize(item.getItemMeta().displayName());
-            
-            return displayName.contains("Upgrade Required");
+        final ConfigurationSection unavailableConfig = this.plugin.getConfigManager()
+            .getItemSection(GUI_NAME, "unavailable-slot");
+        
+        if (unavailableConfig == null) {
+            return false;
         }
         
-        return false;
+        // Check material type instead of display name
+        final String configMaterial = unavailableConfig.getString("material", "minecraft:red_bed");
+        return this.matchesMaterial(item, configMaterial);
     }
 
     /**
@@ -305,19 +299,8 @@ public final class MainHomesGUI extends BaseGUI {
             return false;
         }
         
-        // Check if it's not an available or unavailable slot
-        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
-            final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
-                .serialize(item.getItemMeta().displayName());
-            
-            // Check if it's an occupied slot (has "Home:" in the name)
-            return displayName.contains("Home:") || 
-                   (!displayName.contains("Upgrade Required") && 
-                    !displayName.contains("Available") && 
-                    !displayName.contains("Close"));
-        }
-        
-        return false;
+        // If it's not available or unavailable, it must be occupied
+        return !this.isAvailableSlot(slot) && !this.isUnavailableSlot(slot) && !this.isCloseButton(slot);
     }
 
     /**

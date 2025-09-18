@@ -61,8 +61,6 @@ public final class HomeDialogBuilder {
             this.plugin.getConfigManager().getConfig().getString("dialogs.create-home.body.2", 
                 "<gray>• Maksymalna długość: 16 znaków</gray>"))));
 
-        this.plugin.getLogger().info("Creating home creation dialog for player: " + player.getName() + " with ID: " + playerId);
-
         return Dialog.create(factory -> factory.empty()
             .base(DialogBase.builder(this.miniMessage.deserialize(
                 this.plugin.getConfigManager().getConfig().getString("dialogs.create-home.title", 

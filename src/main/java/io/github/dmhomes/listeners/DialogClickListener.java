@@ -119,24 +119,14 @@ public class DialogClickListener implements Listener {
 
 
                 if (success) {
-                    // Send success message with nice formatting
-                    player.sendMessage(Component.empty());
-                    player.sendMessage(Component.text("✓ Dom został utworzony pomyślnie!")
-                            .color(NamedTextColor.GREEN));
-                    player.sendMessage(Component.text("Nazwa: ")
-                            .color(NamedTextColor.GRAY)
-                            .append(Component.text(cleanName).color(NamedTextColor.WHITE)));
-                    player.sendMessage(Component.text("Lokalizacja: ")
-                            .color(NamedTextColor.GRAY)
-                            .append(Component.text(player.getLocation().getBlockX() + ", " +
-                                    player.getLocation().getBlockY() + ", " +
-                                    player.getLocation().getBlockZ()).color(NamedTextColor.WHITE)));
-                    player.sendMessage(Component.empty());
+                    // Send configurable success message
+                    player.sendMessage(this.plugin.getMessageManager()
+                        .getMessage("home-created", "home_name", cleanName));
                 } else {
                     // Check specific failure reasons
                     if (this.plugin.getHomeManager().hasHome(player, cleanName)) {
-                        player.sendMessage(Component.text("✗ Dom o tej nazwie już istnieje!")
-                                .color(NamedTextColor.RED));
+                        player.sendMessage(this.plugin.getMessageManager()
+                            .getMessage("error-home-exists", "home_name", cleanName));
                     } else if (!this.plugin.getHomeManager().canCreateHome(player)) {
                         player.sendMessage(this.plugin.getMessageManager()
                                 .getMessage("error-max-homes"));
@@ -144,22 +134,21 @@ public class DialogClickListener implements Listener {
                         player.sendMessage(this.plugin.getMessageManager()
                                 .getMessage("error-invalid-name"));
                     }
+                    this.plugin.getTeleportationManager().playErrorSound(player);
                 }
             } catch (final Exception exception) {
-                this.plugin.getLogger().warning("Failed to create home for player "
-                        + player.getName() + ": " + exception.getMessage());
-                exception.printStackTrace();
-                player.sendMessage(Component.text("✗ Wystąpił błąd podczas tworzenia domu!")
-                        .color(NamedTextColor.RED));
+                player.sendMessage(this.plugin.getMessageManager()
+                    .getMessage("error-generic", "error", "Failed to create home"));
+                this.plugin.getTeleportationManager().playErrorSound(player);
             }
 
             // Clear any pending callbacks
             this.plugin.getHomeCreationDialog().clearPendingCallbacks();
 
         } catch (final Exception exception) {
-            this.plugin.getLogger().severe("Error handling home creation dialog click: " + exception.getMessage());
-            exception.printStackTrace();
-            player.sendMessage(Component.text("✗ Wystąpił błąd podczas przetwarzania dialogu!", NamedTextColor.RED));
+            player.sendMessage(this.plugin.getMessageManager()
+                .getMessage("error-generic", "error", "Dialog processing failed"));
+            this.plugin.getTeleportationManager().playErrorSound(player);
         }
     }
 
