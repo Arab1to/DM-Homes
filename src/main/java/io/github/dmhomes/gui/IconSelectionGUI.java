@@ -80,11 +80,12 @@ public final class IconSelectionGUI extends BaseGUI {
             return;
         }
         
-        int slotIndex = 0;
-        final int maxSlots = Math.min(this.inventory.getSize() - 1, 25); // Reserve last slot for back button
+        // Define the specific slots where icons should be placed
+        final int[] iconSlots = {1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25};
+        int iconIndex = 0;
         
         for (final String iconMaterial : availableIcons) {
-            if (slotIndex >= maxSlots) {
+            if (iconIndex >= iconSlots.length) {
                 // TODO: Implement pagination if needed
                 this.plugin.getLogger().info("More icons available than can fit in GUI, consider implementing pagination");
                 break;
@@ -92,7 +93,7 @@ public final class IconSelectionGUI extends BaseGUI {
             
             final ItemStack iconItem = this.createIconItem(iconMaterial);
             if (iconItem != null) {
-                this.inventory.setItem(slotIndex++, iconItem);
+                this.inventory.setItem(iconSlots[iconIndex++], iconItem);
             }
         }
     }
@@ -182,7 +183,7 @@ public final class IconSelectionGUI extends BaseGUI {
             return false;
         }
         
-        final int backButtonSlot = backConfig.getInt("slot", this.inventory.getSize() - 1);
+        final int backButtonSlot = backConfig.getInt("slot", 31);
         return slot == backButtonSlot;
     }
 
@@ -201,11 +202,15 @@ public final class IconSelectionGUI extends BaseGUI {
             return null;
         }
         
+        // Define the specific slots where icons are placed
+        final int[] iconSlots = {1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25};
         final List<String> availableIcons = this.plugin.getConfigManager().getAvailableIcons();
         
-        // Find the material string that corresponds to this slot
-        if (slot < availableIcons.size()) {
-            return availableIcons.get(slot);
+        // Find which icon slot this is
+        for (int i = 0; i < iconSlots.length; i++) {
+            if (iconSlots[i] == slot && i < availableIcons.size()) {
+                return availableIcons.get(i);
+            }
         }
         
         return null;

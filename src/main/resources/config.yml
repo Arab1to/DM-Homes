@@ -120,7 +120,7 @@ guis:
 
   icon-menu:
     title: "Select an Icon"
-    size: 27
+    size: 36
     items:
       # This list defines the items players can choose from.
       # The plugin will automatically paginate if there are more items than available slots.
@@ -149,7 +149,7 @@ guis:
         # - "itemsadder:my_cool_block"
         # - "itemsadder:custom_sword"
       back-button:
-        slot: 26
+        slot: 31
         material: "minecraft:arrow"
         name: "<!italic><gray>Back</gray>"
         lore: []
