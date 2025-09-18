@@ -21,7 +21,7 @@ import java.util.Objects;
 @UtilityClass
 public class ItemBuilder {
 
-    private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     /**
      * Creates an ItemStack from a configuration section
@@ -137,13 +137,15 @@ public class ItemBuilder {
         
         if (meta != null) {
             if (name != null) {
-                meta.displayName(miniMessage.deserialize("<!italic>" + name));
+                final String processedName = name.startsWith("<!italic>") ? name : "<!italic>" + name;
+                meta.displayName(miniMessage.deserialize(processedName));
             }
             
             if (lore.length > 0) {
                 final List<Component> loreComponents = new ArrayList<>();
                 for (final String loreLine : lore) {
-                    loreComponents.add(miniMessage.deserialize("<!italic>" + loreLine));
+                    final String processedLore = loreLine.startsWith("<!italic>") ? loreLine : "<!italic>" + loreLine;
+                    loreComponents.add(miniMessage.deserialize(processedLore));
                 }
                 meta.lore(loreComponents);
             }
@@ -159,7 +161,7 @@ public class ItemBuilder {
      * @param materialString the material string
      * @return the parsed Material or null if invalid
      */
-    private @Nullable Material parseMaterial(final @NotNull String materialString) {
+    private static @Nullable Material parseMaterial(final @NotNull String materialString) {
         Objects.requireNonNull(materialString, "Material string cannot be null");
         
         // Handle minecraft: prefix
@@ -187,7 +189,7 @@ public class ItemBuilder {
      * @param itemsAdderString the ItemsAdder item string
      * @return the Material or null if ItemsAdder is not available
      */
-    private @Nullable Material handleItemsAdder(final @NotNull String itemsAdderString) {
+    private static @Nullable Material handleItemsAdder(final @NotNull String itemsAdderString) {
         // Check if ItemsAdder is available
         if (Bukkit.getPluginManager().getPlugin("ItemsAdder") == null) {
             // Return a reasonable fallback material
@@ -216,7 +218,7 @@ public class ItemBuilder {
      * @param placeholders the placeholders (key-value pairs)
      * @return the text with placeholders replaced
      */
-    private @NotNull String replacePlaceholders(final @NotNull String text, final @NotNull String... placeholders) {
+    private static @NotNull String replacePlaceholders(final @NotNull String text, final @NotNull String... placeholders) {
         String result = text;
         
         for (int i = 0; i < placeholders.length; i += 2) {
@@ -236,7 +238,7 @@ public class ItemBuilder {
      * @param itemsAdderId the ItemsAdder item ID
      * @return the created ItemStack or fallback if ItemsAdder is not available
      */
-    private @Nullable ItemStack createItemsAdderItem(final @NotNull ConfigurationSection config, final @NotNull String itemsAdderId) {
+    private static @Nullable ItemStack createItemsAdderItem(final @NotNull ConfigurationSection config, final @NotNull String itemsAdderId) {
         try {
             // Check if ItemsAdder is available
             if (Bukkit.getPluginManager().getPlugin("ItemsAdder") == null) {
@@ -258,7 +260,7 @@ public class ItemBuilder {
                     if (name != null) {
                         // Add <!italic> if not already present
                         final String processedName = name.startsWith("<!italic>") ? name : "<!italic>" + name;
-                        meta.displayName(miniMessage.deserialize("<!italic><red>ItemsAdder: " + itemsAdderId + "</red>"));
+                        meta.displayName(miniMessage.deserialize(processedName));
                     }
                     
                     // Set lore
@@ -273,8 +275,8 @@ public class ItemBuilder {
                         meta.lore(lore);
                     }
                     
-                        lore.add(miniMessage.deserialize("<!italic><gray>ItemsAdder item: " + itemsAdderId + "</gray>"));
-                        lore.add(miniMessage.deserialize("<!italic><red>ItemsAdder plugin not available</red>"));
+                    item.setItemMeta(meta);
+                }
                 
                 return item;
             }
@@ -291,7 +293,7 @@ public class ItemBuilder {
      * @param itemsAdderId the original ItemsAdder ID
      * @return the fallback ItemStack
      */
-    private @NotNull ItemStack createFallbackItem(final @NotNull ConfigurationSection config, final @NotNull String itemsAdderId) {
+    private static @NotNull ItemStack createFallbackItem(final @NotNull ConfigurationSection config, final @NotNull String itemsAdderId) {
         final ItemStack item = new ItemStack(Material.BARRIER);
         final ItemMeta meta = item.getItemMeta();
         
@@ -308,20 +310,19 @@ public class ItemBuilder {
             
             // Set lore
             final List<String> loreStrings = config.getStringList("lore");
+            final List<Component> lore = new ArrayList<>();
+            
             if (!loreStrings.isEmpty()) {
-                final List<Component> lore = new ArrayList<>();
                 for (final String loreLine : loreStrings) {
                     // Add <!italic> if not already present
                     final String processedLore = loreLine.startsWith("<!italic>") ? loreLine : "<!italic>" + loreLine;
                     lore.add(miniMessage.deserialize(processedLore));
                 }
-                meta.lore(lore);
-            } else {
-                final List<Component> lore = new ArrayList<>();
-                lore.add(miniMessage.deserialize("<!italic><gray>ItemsAdder item: " + itemsAdderId + "</gray>"));
-                lore.add(miniMessage.deserialize("<!italic><red>ItemsAdder plugin not available</red>"));
-                meta.lore(lore);
             }
+            
+            lore.add(miniMessage.deserialize("<!italic><gray>ItemsAdder item: " + itemsAdderId + "</gray>"));
+            lore.add(miniMessage.deserialize("<!italic><red>ItemsAdder plugin not available</red>"));
+            meta.lore(lore);
             
             item.setItemMeta(meta);
         }
