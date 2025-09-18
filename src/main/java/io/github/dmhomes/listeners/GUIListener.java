@@ -188,8 +188,8 @@ public final class GUIListener implements Listener {
     }
 
     /**
-     * Handles creating a new home
-     * @param gui the GUI instance
+            player.sendMessage(this.plugin.getMessageManager()
+                .getMessage("home-icon-changed", "home_name", home.getName()));
      * @param player the player
      */
     private void handleCreateHome(final @NotNull MainHomesGUI gui, final @NotNull Player player) {

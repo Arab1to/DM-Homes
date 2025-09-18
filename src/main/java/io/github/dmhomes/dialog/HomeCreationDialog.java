@@ -215,22 +215,22 @@ public final class HomeCreationDialog {
             final boolean success = this.plugin.getHomeManager().renameHome(player, oldHomeName, newHomeName);
             
             if (success) {
-                player.sendMessage(Component.text("✓ Dom został przemianowany z '" + oldHomeName + "' na '" + newHomeName + "'!")
-                    .color(NamedTextColor.GREEN));
+                player.sendMessage(this.plugin.getMessageManager()
+                    .getMessage("home-renamed", "old_name", oldHomeName, "home_name", newHomeName));
             } else {
                 if (this.plugin.getHomeManager().hasHome(player, newHomeName)) {
-                    player.sendMessage(Component.text("✗ Dom o nazwie '" + newHomeName + "' już istnieje!")
-                        .color(NamedTextColor.RED));
+                    player.sendMessage(this.plugin.getMessageManager()
+                        .getMessage("error-home-exists", "home_name", newHomeName));
                 } else {
-                    player.sendMessage(Component.text("✗ Nie udało się przemianować domu!")
-                        .color(NamedTextColor.RED));
+                    player.sendMessage(this.plugin.getMessageManager()
+                        .getMessage("error-generic", "error", "Failed to rename home"));
                 }
+                this.plugin.getTeleportationManager().playErrorSound(player);
             }
         } catch (final DMHomesException exception) {
-            this.plugin.getLogger().warning("Failed to rename home for player " 
-                + player.getName() + ": " + exception.getMessage());
-            player.sendMessage(Component.text("✗ Wystąpił błąd podczas zmiany nazwy domu!")
-                .color(NamedTextColor.RED));
+            player.sendMessage(this.plugin.getMessageManager()
+                .getMessage("error-generic", "error", "Failed to rename home"));
+            this.plugin.getTeleportationManager().playErrorSound(player);
         }
     }
 
