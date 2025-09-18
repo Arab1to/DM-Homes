@@ -206,7 +206,6 @@ public final class TeleportationManager {
             }
         } catch (final Exception exception) {
             this.plugin.getLogger().warning("Failed to play sound: " + soundName);
-            this.plugin.getLogger().warning("Error: " + exception.getMessage());
         }
     }
 
@@ -262,7 +261,7 @@ public final class TeleportationManager {
         }
 
         private void showCountdown() {
-            final Component title = TeleportationManager.this.getConfigurableMessage("warmup-title");
+            final Component title = TeleportationManager.this.getConfigurableMessage("warmup-title", "time", String.valueOf(this.timeLeft));
             final Component subtitle = TeleportationManager.this.getConfigurableMessage("warmup-subtitle", "time", String.valueOf(this.timeLeft));
 
             final Title countdownTitle = Title.title(

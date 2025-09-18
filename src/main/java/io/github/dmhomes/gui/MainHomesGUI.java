@@ -255,8 +255,6 @@ public final class MainHomesGUI extends BaseGUI {
             final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
                 .serialize(item.getItemMeta().displayName());
             
-            this.plugin.getLogger().info("Slot " + slot + " display name: '" + displayName + "'");
-            
             // Check if it's an available slot
             return displayName.contains("Available Slot") || displayName.contains("Available");
         }
@@ -285,7 +283,6 @@ public final class MainHomesGUI extends BaseGUI {
             final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
                 .serialize(item.getItemMeta().displayName());
             
-            this.plugin.getLogger().info("Slot " + slot + " display name for unavailable check: '" + displayName + "'");
             return displayName.contains("Upgrade Required");
         }
         
@@ -312,8 +309,6 @@ public final class MainHomesGUI extends BaseGUI {
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
             final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
                 .serialize(item.getItemMeta().displayName());
-            
-            this.plugin.getLogger().info("Slot " + slot + " display name for occupied check: '" + displayName + "'");
             
             // Check if it's an occupied slot (has "Home:" in the name)
             return displayName.contains("Home:") || 

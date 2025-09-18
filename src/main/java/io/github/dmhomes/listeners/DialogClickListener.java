@@ -31,7 +31,6 @@ public class DialogClickListener implements Listener {
         final Key key = event.getIdentifier();
         final String keyString = key.asString();
 
-        this.plugin.getLogger().info("Dialog click received: " + keyString);
 
         // Check if this is one of our dialog actions
         if (!keyString.startsWith("dmhomes:")) {
@@ -42,12 +41,10 @@ public class DialogClickListener implements Listener {
         Player player = null;
         try {
             final var connection = event.getCommonConnection();
-            this.plugin.getLogger().info("Connection type: " + connection.getClass().getName());
             
             // Try to get player from PlayerGameConnection
             if (connection instanceof io.papermc.paper.connection.PlayerGameConnection gameConnection) {
                 player = gameConnection.getPlayer();
-                this.plugin.getLogger().info("Got player from PlayerGameConnection: " + (player != null ? player.getName() : "null"));
             } else {
                 this.plugin.getLogger().warning("Connection is not PlayerGameConnection: " + connection.getClass().getSimpleName());
                 return;
@@ -62,7 +59,6 @@ public class DialogClickListener implements Listener {
             return;
         }
 
-        this.plugin.getLogger().info("Processing dialog click for player: " + player.getName());
 
         // Handle different dialog actions
         if (keyString.startsWith("dmhomes:create_home/")) {
@@ -75,7 +71,6 @@ public class DialogClickListener implements Listener {
     }
 
     private void handleHomeCreation(final @NotNull Player player, final @NotNull PlayerCustomClickEvent event, final @NotNull String keyString) {
-        this.plugin.getLogger().info("Handling home creation for player: " + player.getName());
 
         try {
             final UUID playerId = UUID.fromString(keyString.substring("dmhomes:create_home/".length()));
@@ -94,11 +89,9 @@ public class DialogClickListener implements Listener {
                 return;
             }
 
-            this.plugin.getLogger().info("Dialog response view obtained successfully");
 
             // Get the home name from input
             final String homeName = responseView.getText("home_name");
-            this.plugin.getLogger().info("Home name from dialog: '" + homeName + "'");
 
             if (homeName == null || homeName.trim().isEmpty()) {
                 player.sendMessage(Component.text("✗ Nazwa domu nie może być pusta!", NamedTextColor.RED));
@@ -106,7 +99,6 @@ public class DialogClickListener implements Listener {
             }
 
             final String cleanName = homeName.trim();
-            this.plugin.getLogger().info("Clean home name: '" + cleanName + "'");
 
             // Validate home name
             if (cleanName.length() > 16) {
@@ -119,17 +111,12 @@ public class DialogClickListener implements Listener {
                 return;
             }
 
-            this.plugin.getLogger().info("Home name validation passed, attempting to create home");
 
             // Create the home directly here instead of using callback
             try {
-                this.plugin.getLogger().info("Attempting to create home for player: " + player.getName() + 
-                    ", name: " + cleanName + ", location: " + player.getLocation());
-                
                 final boolean success = this.plugin.getHomeManager()
                         .createHome(player, cleanName, player.getLocation());
 
-                this.plugin.getLogger().info("Home creation result: " + success);
 
                 if (success) {
                     // Send success message with nice formatting

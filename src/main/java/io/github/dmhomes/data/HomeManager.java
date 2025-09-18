@@ -161,7 +161,6 @@ public final class HomeManager {
             }
 
             config.save(playerFile);
-            this.plugin.getLogger().info("Saved " + (homes != null ? homes.size() : 0) + " homes for player " + playerUuid);
         } catch (final IOException exception) {
             throw new DMHomesException("Failed to save homes for player " + playerUuid, exception);
         }
@@ -207,8 +206,6 @@ public final class HomeManager {
 
         // Check world blacklist
         if (location.getWorld() != null && this.isWorldBlacklisted(location.getWorld().getName())) {
-            this.plugin.getLogger().info("Home creation blocked in blacklisted world: " + location.getWorld().getName());
-            
             // Play error sound
             this.plugin.getTeleportationManager().playErrorSound(player);
             return false;

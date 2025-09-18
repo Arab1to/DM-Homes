@@ -105,26 +105,6 @@ public final class GUIListener implements Listener {
                                        final int slot, 
                                        final boolean isLeftClick) {
         
-        // Debug logging
-        this.plugin.getLogger().info("Player " + player.getName() + " clicked slot " + slot + 
-            " (left=" + isLeftClick + ")");
-        
-        // Add more detailed debugging
-        final var item = gui.getInventory().getItem(slot);
-        if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
-            final String displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
-                .serialize(item.getItemMeta().displayName());
-            this.plugin.getLogger().info("Item display name: '" + displayName + "'");
-            this.plugin.getLogger().info("Item material: " + item.getType());
-        } else {
-            this.plugin.getLogger().info("Item is null or has no display name");
-        }
-        
-        this.plugin.getLogger().info("isCloseButton: " + gui.isCloseButton(slot));
-        this.plugin.getLogger().info("isAvailableSlot: " + gui.isAvailableSlot(slot));
-        this.plugin.getLogger().info("isUnavailableSlot: " + gui.isUnavailableSlot(slot));
-        this.plugin.getLogger().info("isOccupiedSlot: " + gui.isOccupiedSlot(slot));
-        
         if (gui.isCloseButton(slot)) {
             gui.close();
             return;
