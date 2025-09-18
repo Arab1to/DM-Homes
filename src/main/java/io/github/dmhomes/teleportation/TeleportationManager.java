@@ -52,9 +52,6 @@ public final class TeleportationManager {
         final TeleportationTask task = new TeleportationTask(player, home, warmupTime);
         this.activeTeleportations.put(player.getUniqueId(), task);
         task.start();
-
-        // Play start sound
-        this.playSound(player, "teleport-start");
     }
 
     /**
@@ -109,6 +106,14 @@ public final class TeleportationManager {
     }
 
     /**
+     * Plays an error sound for the player
+     * @param player the player
+     */
+    public void playErrorSound(final @NotNull Player player) {
+        this.playSound(player, "teleport-cancel");
+    }
+
+    /**
      * Performs the actual teleportation
      * @param player the player
      * @param home the home
@@ -116,55 +121,40 @@ public final class TeleportationManager {
     private void performTeleportation(final @NotNull Player player, final @NotNull Home home) {
         final Location location = home.getLocation();
         
-        // Show black screen effect
+        // Teleport immediately
+        player.teleport(location);
+        
+        // Play end sound
+        this.playSound(player, "teleport-end");
+        
+        // Send success message
+        final Component message = this.getConfigurableMessage("teleport-success", "home_name", home.getName());
+        player.sendMessage(message);
+        
+        // Show blackscreen effect after teleportation
         if (this.plugin.getConfigManager().getConfig().getBoolean("teleportation.blackscreen-effect", true)) {
-            this.showBlackScreen(player);
+            this.showPostTeleportBlackScreen(player);
         }
-
-        // Teleport immediately after blackscreen (20 ticks = 1 second)
-        this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
-            player.teleport(location);
-            
-            // Play end sound
-            this.playSound(player, "teleport-end");
-            
-            // Send success message
-            final Component message = this.getConfigurableMessage("teleport-success", "home_name", home.getName());
-            player.sendMessage(message);
-            
-            // Fade out black screen
-            this.fadeOutBlackScreen(player);
-            
-        }, 20L); // 1 second delay for blackscreen
     }
 
     /**
-     * Shows the black screen effect
+     * Shows the post-teleportation black screen effect with fade-out
      * @param player the player
      */
-    private void showBlackScreen(final @NotNull Player player) {
+    private void showPostTeleportBlackScreen(final @NotNull Player player) {
         final Component title = this.getConfigurableMessage("blackscreen-title");
         final Title blackscreenTitle = Title.title(
             title,
             Component.empty(),
-            Title.Times.times(Duration.ofMillis(0), Duration.ofMillis(1000), Duration.ofMillis(0))
+            Title.Times.times(Duration.ofMillis(0), Duration.ofMillis(500), Duration.ofMillis(500))
         );
         
         player.showTitle(blackscreenTitle);
-    }
-
-    /**
-     * Fades out the black screen effect
-     * @param player the player
-     */
-    private void fadeOutBlackScreen(final @NotNull Player player) {
-        final int fadeDuration = this.plugin.getConfigManager().getConfig()
-            .getInt("teleportation.blackscreen-duration", 50);
         
-        // Clear title after fade duration
+        // Clear title after total duration (fade-in + display + fade-out = 1 second)
         this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
             player.clearTitle();
-        }, fadeDuration);
+        }, 20L); // 1 second total
     }
 
     /**

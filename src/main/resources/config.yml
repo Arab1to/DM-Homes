@@ -9,7 +9,6 @@ teleportation:
   blackscreen-duration: 50 # Duration of black screen fade in ticks
   sounds:
     enabled: true # Enable/disable all teleportation sounds
-    teleport-start: "minecraft:block.portal.ambient"
     teleport-end: "utilsandtools:teleportation_end"
     teleport-cancel: "minecraft:block.note_block.bass"
   messages:

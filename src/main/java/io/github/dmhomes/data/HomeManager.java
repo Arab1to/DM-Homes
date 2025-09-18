@@ -208,6 +208,9 @@ public final class HomeManager {
         // Check world blacklist
         if (location.getWorld() != null && this.isWorldBlacklisted(location.getWorld().getName())) {
             this.plugin.getLogger().info("Home creation blocked in blacklisted world: " + location.getWorld().getName());
+            
+            // Play error sound
+            this.plugin.getTeleportationManager().playErrorSound(player);
             return false;
         }
 

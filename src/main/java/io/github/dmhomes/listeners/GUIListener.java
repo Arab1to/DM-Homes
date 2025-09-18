@@ -216,12 +216,14 @@ public final class GUIListener implements Listener {
         // Check if player can create more homes
         if (!this.plugin.getHomeManager().canCreateHome(player)) {
             player.sendMessage(this.plugin.getMessageManager().getMessage("error-max-homes"));
+            this.plugin.getTeleportationManager().playErrorSound(player);
             return;
         }
         
         // Check if current world is blacklisted
         if (player.getWorld() != null && this.plugin.getHomeManager().isWorldBlacklisted(player.getWorld().getName())) {
             player.sendMessage(this.plugin.getMessageManager().getMessage("error-world-blacklisted", "world", player.getWorld().getName()));
+            this.plugin.getTeleportationManager().playErrorSound(player);
             return;
         }
         

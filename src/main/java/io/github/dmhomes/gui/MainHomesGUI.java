@@ -197,6 +197,7 @@ public final class MainHomesGUI extends BaseGUI {
         
         if (closeButtonConfig == null) {
             this.plugin.getLogger().warning("Missing close-button configuration for main-menu GUI");
+            this.plugin.getTeleportationManager().playErrorSound(player);
             return;
         }
         
