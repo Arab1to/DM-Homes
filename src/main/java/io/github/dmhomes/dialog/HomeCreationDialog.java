@@ -180,17 +180,19 @@ public final class HomeCreationDialog {
             final boolean success = this.plugin.getHomeManager().deleteHome(player, homeName);
             
             if (success) {
-                player.sendMessage(Component.text("✓ Dom '" + homeName + "' został usunięty!")
-                    .color(NamedTextColor.GREEN));
+                player.sendMessage(TeleportationManager.this.plugin.getMessageManager()
+                    .getMessage("home-deleted", "home_name", homeName));
             } else {
-                player.sendMessage(Component.text("✗ Nie udało się usunąć domu '" + homeName + "'!")
-                    .color(NamedTextColor.RED));
+                player.sendMessage(TeleportationManager.this.plugin.getMessageManager()
+                    .getMessage("error-delete-failed", "home_name", homeName));
+                TeleportationManager.this.plugin.getTeleportationManager().playErrorSound(player);
             }
         } catch (final DMHomesException exception) {
             this.plugin.getLogger().warning("Failed to delete home for player " 
                 + player.getName() + ": " + exception.getMessage());
-            player.sendMessage(Component.text("✗ Wystąpił błąd podczas usuwania domu!")
-                .color(NamedTextColor.RED));
+            player.sendMessage(this.plugin.getMessageManager()
+                .getMessage("error-delete-failed", "home_name", homeName));
+            this.plugin.getTeleportationManager().playErrorSound(player);
         }
     }
 

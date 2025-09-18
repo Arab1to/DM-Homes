@@ -26,7 +26,7 @@ teleportation:
 messages:
   home-created: "<green>Successfully created home named '{home_name}'!</green>"
   home-renamed: "<green>Successfully renamed home to '{home_name}'!</green>"
-  home-deleted: "<red>Successfully deleted home '{home_name}'.</red>"
+  home-deleted: "<green>Successfully deleted home '{home_name}'!</green>"
   home-icon-changed: "<aqua>Successfully changed icon for home '{home_name}'!</aqua>"
   error-home-exists: "<red>A home with that name already exists!</red>"
   error-invalid-name: "<red>Invalid home name! Please use only letters, numbers, and underscores.</red>"
