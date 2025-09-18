@@ -112,8 +112,8 @@ public final class IconSelectionGUI extends BaseGUI {
         }
         
         return ItemBuilder.create(material, 
-            "<yellow>" + this.formatMaterialName(material.name()) + "</yellow>",
-            "<gray>Click to select this icon</gray>");
+            "<!italic><yellow>" + this.formatMaterialName(material.name()) + "</yellow>",
+            "<!italic><gray>Click to select this icon</gray>");
     }
 
     /**

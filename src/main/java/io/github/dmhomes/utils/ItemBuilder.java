@@ -49,7 +49,9 @@ public class ItemBuilder {
             // Set display name
             final String name = config.getString("name");
             if (name != null) {
-                meta.displayName(miniMessage.deserialize(name));
+                // Add <!italic> if not already present
+                final String processedName = name.startsWith("<!italic>") ? name : "<!italic>" + name;
+                meta.displayName(miniMessage.deserialize(processedName));
             }
             
             // Set lore
@@ -57,7 +59,9 @@ public class ItemBuilder {
             if (!loreStrings.isEmpty()) {
                 final List<Component> lore = new ArrayList<>();
                 for (final String loreLine : loreStrings) {
-                    lore.add(miniMessage.deserialize(loreLine));
+                    // Add <!italic> if not already present
+                    final String processedLore = loreLine.startsWith("<!italic>") ? loreLine : "<!italic>" + loreLine;
+                    lore.add(miniMessage.deserialize(processedLore));
                 }
                 meta.lore(lore);
             }
@@ -92,7 +96,9 @@ public class ItemBuilder {
             String name = config.getString("name");
             if (name != null) {
                 name = replacePlaceholders(name, placeholders);
-                meta.displayName(miniMessage.deserialize(name));
+                // Add <!italic> if not already present
+                final String processedName = name.startsWith("<!italic>") ? name : "<!italic>" + name;
+                meta.displayName(miniMessage.deserialize(processedName));
             }
             
             // Set lore with placeholders
@@ -101,7 +107,9 @@ public class ItemBuilder {
                 final List<Component> lore = new ArrayList<>();
                 for (String loreLine : loreStrings) {
                     loreLine = replacePlaceholders(loreLine, placeholders);
-                    lore.add(miniMessage.deserialize(loreLine));
+                    // Add <!italic> if not already present
+                    final String processedLore = loreLine.startsWith("<!italic>") ? loreLine : "<!italic>" + loreLine;
+                    lore.add(miniMessage.deserialize(processedLore));
                 }
                 meta.lore(lore);
             }
@@ -129,13 +137,13 @@ public class ItemBuilder {
         
         if (meta != null) {
             if (name != null) {
-                meta.displayName(miniMessage.deserialize(name));
+                meta.displayName(miniMessage.deserialize("<!italic>" + name));
             }
             
             if (lore.length > 0) {
                 final List<Component> loreComponents = new ArrayList<>();
                 for (final String loreLine : lore) {
-                    loreComponents.add(miniMessage.deserialize(loreLine));
+                    loreComponents.add(miniMessage.deserialize("<!italic>" + loreLine));
                 }
                 meta.lore(loreComponents);
             }
@@ -248,7 +256,9 @@ public class ItemBuilder {
                     // Set display name
                     final String name = config.getString("name");
                     if (name != null) {
-                        meta.displayName(miniMessage.deserialize(name));
+                        // Add <!italic> if not already present
+                        final String processedName = name.startsWith("<!italic>") ? name : "<!italic>" + name;
+                        meta.displayName(miniMessage.deserialize("<!italic><red>ItemsAdder: " + itemsAdderId + "</red>"));
                     }
                     
                     // Set lore
@@ -256,13 +266,15 @@ public class ItemBuilder {
                     if (!loreStrings.isEmpty()) {
                         final List<Component> lore = new ArrayList<>();
                         for (final String loreLine : loreStrings) {
-                            lore.add(miniMessage.deserialize(loreLine));
+                            // Add <!italic> if not already present
+                            final String processedLore = loreLine.startsWith("<!italic>") ? loreLine : "<!italic>" + loreLine;
+                            lore.add(miniMessage.deserialize(processedLore));
                         }
                         meta.lore(lore);
                     }
                     
-                    item.setItemMeta(meta);
-                }
+                        lore.add(miniMessage.deserialize("<!italic><gray>ItemsAdder item: " + itemsAdderId + "</gray>"));
+                        lore.add(miniMessage.deserialize("<!italic><red>ItemsAdder plugin not available</red>"));
                 
                 return item;
             }
@@ -287,9 +299,11 @@ public class ItemBuilder {
             // Set display name
             final String name = config.getString("name");
             if (name != null) {
-                meta.displayName(miniMessage.deserialize(name));
+                // Add <!italic> if not already present
+                final String processedName = name.startsWith("<!italic>") ? name : "<!italic>" + name;
+                meta.displayName(miniMessage.deserialize(processedName));
             } else {
-                meta.displayName(miniMessage.deserialize("<red>ItemsAdder: " + itemsAdderId + "</red>"));
+                meta.displayName(miniMessage.deserialize("<!italic><red>ItemsAdder: " + itemsAdderId + "</red>"));
             }
             
             // Set lore
@@ -297,13 +311,15 @@ public class ItemBuilder {
             if (!loreStrings.isEmpty()) {
                 final List<Component> lore = new ArrayList<>();
                 for (final String loreLine : loreStrings) {
-                    lore.add(miniMessage.deserialize(loreLine));
+                    // Add <!italic> if not already present
+                    final String processedLore = loreLine.startsWith("<!italic>") ? loreLine : "<!italic>" + loreLine;
+                    lore.add(miniMessage.deserialize(processedLore));
                 }
                 meta.lore(lore);
             } else {
                 final List<Component> lore = new ArrayList<>();
-                lore.add(miniMessage.deserialize("<gray>ItemsAdder item: " + itemsAdderId + "</gray>"));
-                lore.add(miniMessage.deserialize("<red>ItemsAdder plugin not available</red>"));
+                lore.add(miniMessage.deserialize("<!italic><gray>ItemsAdder item: " + itemsAdderId + "</gray>"));
+                lore.add(miniMessage.deserialize("<!italic><red>ItemsAdder plugin not available</red>"));
                 meta.lore(lore);
             }
             

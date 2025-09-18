@@ -63,31 +63,31 @@ guis:
       # Items are dynamically placed in the first available slots.
       available-slot:
         material: "minecraft:GREEN_BED"
-        name: "<green><bold>Available Slot</bold></green>"
+        name: "<!italic><green><bold>Available Slot</bold></green>"
         lore:
-          - "<gray>Left-click to set a new home."
+          - "<!italic><gray>Left-click to set a new home."
       occupied-slot:
         # The default icon if no custom one is set.
         material: "minecraft:BLUE_BED"
         # Placeholders: {home_name}, {home_world}, {home_x}, {home_y}, {home_z}
-        name: "<gold>Home: {home_name}</gold>"
+        name: "<!italic><gold>Home: {home_name}</gold>"
         lore:
-          - "<gray>Location: {home_world}, {home_x}, {home_y}, {home_z}"
+          - "<!italic><gray>Location: {home_world}, {home_x}, {home_y}, {home_z}"
           - ""
-          - "<yellow>Left-click to teleport."
-          - "<yellow>Right-click to manage."
+          - "<!italic><yellow>Left-click to teleport."
+          - "<!italic><yellow>Right-click to manage."
       unavailable-slot:
         material: "minecraft:RED_BED"
-        name: "<red><bold>Upgrade Required</bold></red>"
+        name: "<!italic><red><bold>Upgrade Required</bold></red>"
         lore:
-          - "<gray>You need to upgrade your rank"
-          - "<gray>to unlock this home slot."
+          - "<!italic><gray>You need to upgrade your rank"
+          - "<!italic><gray>to unlock this home slot."
           - ""
-          - "<yellow>Visit our store to upgrade!"
+          - "<!italic><yellow>Visit our store to upgrade!"
       close-button:
         slot: 13 # Slot 13 in 18-slot GUI
         material: "minecraft:barrier"
-        name: "<red><bold>Close</bold></red>"
+        name: "<!italic><red><bold>Close</bold></red>"
         lore: []
 
   management-menu:
@@ -97,25 +97,25 @@ guis:
       rename-button:
         slot: 2
         material: "minecraft:name_tag"
-        name: "<yellow>Rename Home</yellow>"
+        name: "<!italic><yellow>Rename Home</yellow>"
         lore:
-          - "<gray>Click to change this home's name."
+          - "<!italic><gray>Click to change this home's name."
       delete-button:
         slot: 4
         material: "minecraft:tnt"
-        name: "<red>Delete Home</red>"
+        name: "<!italic><red>Delete Home</red>"
         lore:
-          - "<dark_red>This action cannot be undone!"
+          - "<!italic><dark_red>This action cannot be undone!"
       change-icon-button:
         slot: 6
         material: "minecraft:item_frame"
-        name: "<aqua>Change Icon</aqua>"
+        name: "<!italic><aqua>Change Icon</aqua>"
         lore:
-          - "<gray>Click to choose a new icon."
+          - "<!italic><gray>Click to choose a new icon."
       back-button:
         slot: 8
         material: "minecraft:arrow"
-        name: "<gray>Back</gray>"
+        name: "<!italic><gray>Back</gray>"
         lore: []
 
   icon-menu:
@@ -151,7 +151,7 @@ guis:
       back-button:
         slot: 26
         material: "minecraft:arrow"
-        name: "<gray>Back</gray>"
+        name: "<!italic><gray>Back</gray>"
         lore: []
 
 # Dialog configuration for visual components
