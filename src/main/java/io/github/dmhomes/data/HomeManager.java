@@ -206,7 +206,8 @@ public final class HomeManager {
         }
 
         // Check world blacklist
-        if (this.isWorldBlacklisted(location.getWorld().getName())) {
+        if (location.getWorld() != null && this.isWorldBlacklisted(location.getWorld().getName())) {
+            this.plugin.getLogger().info("Home creation blocked in blacklisted world: " + location.getWorld().getName());
             return false;
         }
 
@@ -349,7 +350,7 @@ public final class HomeManager {
      * @param worldName the world name
      * @return true if the world is blacklisted
      */
-    private boolean isWorldBlacklisted(final @NotNull String worldName) {
+    public boolean isWorldBlacklisted(final @NotNull String worldName) {
         final List<String> blacklist = this.plugin.getConfigManager().getConfig()
                 .getStringList("homes.world-blacklist");
         return blacklist.contains(worldName);

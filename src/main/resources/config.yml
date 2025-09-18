@@ -40,6 +40,7 @@ messages:
   error-delete-failed: "<red>Failed to delete home '{home_name}'!</red>"
   error-player-only: "<red>This command can only be used by players!</red>"
   error-upgrade-required: "<red>You need to upgrade your rank to use this home slot!</red>"
+  error-world-blacklisted: "<red>You cannot create homes in this world: {world}</red>"
   plugin-reloaded: "<green>DM-Homes configuration reloaded successfully!</green>"
   home-set-success: "<green>Home '{home_name}' set at your current location!</green>"
   home-list-header: "<yellow>Your homes ({count}/{max}):</yellow>"
@@ -61,7 +62,12 @@ homes:
   max-homes-default: 7 # Default max homes if no permission-based limit
   max-homes-gui-slots: 7 # Maximum slots shown in GUI (for non-admin players)
   name-regex: "^[a-zA-Z0-9_]{1,16}$" # Allowed home name pattern
-  world-blacklist: [] # Worlds where homes cannot be set
+  world-blacklist: # Worlds where homes cannot be set
+    - "world_nether"
+    - "world_the_end"
+    # Add more worlds here as needed
+    # - "pvp_world"
+    # - "minigames"
 
 guis:
   main-menu:

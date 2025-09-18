@@ -68,12 +68,12 @@ public final class TeleportationManager {
             task.cancel();
             
             // Send cancellation message and title
-            final Component message = this.plugin.getMessageManager().getMessage("teleportation.teleport-cancelled-" + reason);
+            final Component message = this.getConfigurableMessage("teleport-cancelled-" + reason);
             player.sendMessage(message);
             
             // Show cancellation title
-            final Component title = this.plugin.getMessageManager().getMessage("teleportation.messages.teleport-cancelled-title");
-            final Component subtitle = this.plugin.getMessageManager().getMessage("teleportation.messages.teleport-cancelled-subtitle-" + reason);
+            final Component title = this.getConfigurableMessage("teleport-cancelled-title");
+            final Component subtitle = this.getConfigurableMessage("teleport-cancelled-subtitle-" + reason);
             
             final Title cancelTitle = Title.title(
                 title,
@@ -121,7 +121,7 @@ public final class TeleportationManager {
             this.showBlackScreen(player);
         }
 
-        // Teleport after 95 ticks (4.75 seconds) to sync with black screen
+        // Teleport immediately after blackscreen (20 ticks = 1 second)
         this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
             player.teleport(location);
             
@@ -129,14 +129,13 @@ public final class TeleportationManager {
             this.playSound(player, "teleport-end");
             
             // Send success message
-            final Component message = this.plugin.getMessageManager()
-                .getMessage("teleportation-messages-teleport-success", "home_name", home.getName());
+            final Component message = this.getConfigurableMessage("teleport-success", "home_name", home.getName());
             player.sendMessage(message);
             
             // Fade out black screen
             this.fadeOutBlackScreen(player);
             
-        }, 95L);
+        }, 20L); // 1 second delay for blackscreen
     }
 
     /**
@@ -144,11 +143,11 @@ public final class TeleportationManager {
      * @param player the player
      */
     private void showBlackScreen(final @NotNull Player player) {
-        final Component title = this.plugin.getMessageManager().getMessage("teleportation-messages-blackscreen-title");
+        final Component title = this.getConfigurableMessage("blackscreen-title");
         final Title blackscreenTitle = Title.title(
             title,
             Component.empty(),
-            Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0))
+            Title.Times.times(Duration.ofMillis(0), Duration.ofMillis(1000), Duration.ofMillis(0))
         );
         
         player.showTitle(blackscreenTitle);
@@ -273,10 +272,8 @@ public final class TeleportationManager {
         }
 
         private void showCountdown() {
-            final Component title = TeleportationManager.this.plugin.getMessageManager()
-                .getMessage("teleportation-messages-warmup-title");
-            final Component subtitle = TeleportationManager.this.plugin.getMessageManager()
-                .getMessage("teleportation-messages-warmup-subtitle", "time", String.valueOf(this.timeLeft));
+            final Component title = TeleportationManager.this.getConfigurableMessage("warmup-title");
+            final Component subtitle = TeleportationManager.this.getConfigurableMessage("warmup-subtitle", "time", String.valueOf(this.timeLeft));
 
             final Title countdownTitle = Title.title(
                 title,
@@ -294,5 +291,35 @@ public final class TeleportationManager {
             }
             super.cancel();
         }
+    }
+
+    /**
+     * Gets a configurable message from teleportation config section first, then falls back to messages section
+     * @param messageKey the message key
+     * @param placeholders the placeholders
+     * @return the formatted message component
+     */
+    private @NotNull Component getConfigurableMessage(final @NotNull String messageKey, final @NotNull String... placeholders) {
+        // First try teleportation.messages section
+        String message = this.plugin.getConfigManager().getConfig().getString("teleportation.messages." + messageKey);
+        
+        // If not found, try main messages section with teleportation prefix
+        if (message == null) {
+            message = this.plugin.getConfigManager().getConfig().getString("messages.teleportation-messages-" + messageKey);
+        }
+        
+        // If still not found, use MessageManager fallback
+        if (message == null) {
+            return this.plugin.getMessageManager().getMessage("teleportation-messages-" + messageKey, placeholders);
+        }
+        
+        // Replace placeholders manually
+        for (int i = 0; i < placeholders.length; i += 2) {
+            if (i + 1 < placeholders.length) {
+                message = message.replace("{" + placeholders[i] + "}", placeholders[i + 1]);
+            }
+        }
+        
+        return net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(message);
     }
 }

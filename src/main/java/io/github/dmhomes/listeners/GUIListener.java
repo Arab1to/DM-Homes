@@ -219,6 +219,12 @@ public final class GUIListener implements Listener {
             return;
         }
         
+        // Check if current world is blacklisted
+        if (player.getWorld() != null && this.plugin.getHomeManager().isWorldBlacklisted(player.getWorld().getName())) {
+            player.sendMessage(this.plugin.getMessageManager().getMessage("error-world-blacklisted", "world", player.getWorld().getName()));
+            return;
+        }
+        
         gui.close();
         
         // Show dialog for home name input
